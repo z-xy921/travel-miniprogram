@@ -1,0 +1,78 @@
+# 知识卡导出索引文件
+schema_version: 1
+locale: zh-CN
+branch: Q0DeR-MaG1C-BrAnCh-Fo2-NoN-GiT-Or-No-C0MmIt
+nodes_managed: true
+exported_at: "2026-11-10T11:35:51Z"
+modules:
+    "":
+        dir_name: 旅行计划小程序入口
+        title: 旅行计划小程序入口
+        scope:
+            - app.js
+            - app.json
+            - app.wxss
+            - project.config.json
+            - project.private.config.json
+            - sitemap.json
+        source_files: []
+        children:
+            - components
+            - pages
+            - services
+            - utils
+        depends_on: []
+        related_to: []
+    components:
+        dir_name: 小程序通用 UI 组件库
+        title: 小程序通用 UI 组件库
+        scope:
+            - components/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []
+    pages:
+        dir_name: 小程序页面路由集合
+        title: 小程序页面路由集合
+        scope:
+            - pages/
+        source_files: []
+        children:
+            - pages/profile_about
+        depends_on: []
+        related_to:
+            - path: services
+    pages/profile_about:
+        dir_name: 个人中心（我的）页面
+        title: 个人中心（我的）页面
+        scope:
+            - pages/profile.js
+            - pages/profile.json
+            - pages/profile.wxml
+            - pages/profile.wxss
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: services
+    services:
+        dir_name: 小程序云函数服务封装层
+        title: 小程序云函数服务封装层
+        scope:
+            - services/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: pages
+            - path: pages/profile_about
+    utils:
+        dir_name: 小程序通用工具库
+        title: 小程序通用工具库
+        scope:
+            - utils/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []

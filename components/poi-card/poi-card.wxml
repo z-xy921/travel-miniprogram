@@ -1,0 +1,40 @@
+<view class="poi">
+  <view class="head">
+    <view class="time-col">
+      <text class="time">{{item.plannedTime || '--:--'}}</text>
+      <text class="dur" wx:if="{{item.durationText}}">{{item.durationText}}</text>
+    </view>
+    <view class="main">
+      <view class="title">{{item.name}}</view>
+      <view class="sub">
+        <text class="tag">{{item.category}}</text>
+        <text class="sub-text" wx:if="{{item.address}}">{{item.address}}</text>
+      </view>
+    </view>
+    <view class="edit" catchtap="onEdit">编辑</view>
+  </view>
+
+  <view class="facts" wx:if="{{item.factsList.length}}">
+    <view class="facts-head" catchtap="onToggleFacts">
+      <text class="facts-title">已知信息</text>
+      <text class="badge {{item.factsPending ? 'badge-pending' : 'badge-done'}}">
+        {{item.factsPending ? '待核实' : '已核实'}}
+      </text>
+    </view>
+    <fact-row
+      wx:for="{{item.factsList}}"
+      wx:for-item="fact"
+      wx:key="key"
+      label="{{fact.label}}"
+      value="{{fact.value}}"
+    />
+  </view>
+
+  <view class="note" wx:if="{{item.note}}">{{item.note}}</view>
+
+  <view class="actions" wx:if="{{editing}}">
+    <view class="act" catchtap="onUp">上移</view>
+    <view class="act" catchtap="onDown">下移</view>
+    <view class="act is-danger" catchtap="onRemove">删除</view>
+  </view>
+</view>

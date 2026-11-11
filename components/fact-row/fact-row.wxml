@@ -1,0 +1,4 @@
+<view class="fact">
+  <text class="fact-label">{{label}}</text>
+  <text class="fact-value">{{value}}</text>
+</view>

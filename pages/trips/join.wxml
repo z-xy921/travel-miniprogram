@@ -1,0 +1,32 @@
+<view class="page">
+  <view class="card" wx:if="{{tripId}}">
+    <view class="section-title">加入行程</view>
+    <view class="muted" wx:if="{{loading}}">正在加入…</view>
+    <block wx:elif="{{error}}">
+      <view class="text">{{error}}</view>
+      <view class="row">
+        <view class="btn-ghost" bindtap="onHome">回我的行程</view>
+        <view class="btn-sm" bindtap="onRetry">再试一次</view>
+      </view>
+    </block>
+  </view>
+
+  <view class="card">
+    <view class="section-title">输入邀请码</view>
+    <view class="field-box">
+      <input
+        class="field-input"
+        value="{{code}}"
+        bindinput="onCode"
+        placeholder="例如 K7M2PX"
+        placeholder-class="ph"
+        maxlength="6"
+      />
+    </view>
+    <view class="muted" style="margin-top: 12rpx;">6 位，由创建者在「邀请同行」里给你，7 天内有效。</view>
+    <view class="error-text" wx:if="{{error && !tripId}}">{{error}}</view>
+    <view class="btn-primary {{loading ? 'is-disabled' : ''}}" style="margin-top: 26rpx;" bindtap="onManual">加入</view>
+  </view>
+
+  <view class="foot tiny">加入后可以和大家一起改行程、共用一本账。</view>
+</view>

@@ -1,0 +1,101 @@
+.code {
+  margin: 18rpx 0 10rpx;
+  font-size: 60rpx;
+  font-weight: 600;
+  letter-spacing: 10rpx;
+  color: #2563eb;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  margin-top: 24rpx;
+}
+
+.share-btn {
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  height: 84rpx;
+  line-height: 84rpx;
+  font-size: 30rpx;
+  border-radius: 16rpx;
+}
+
+.share-btn::after {
+  border: none;
+}
+
+.btn-ghost {
+  margin-right: 16rpx;
+  height: 84rpx;
+  line-height: 84rpx;
+  padding: 0 32rpx;
+  font-size: 28rpx;
+}
+
+.member {
+  display: flex;
+  align-items: center;
+  padding: 18rpx 0;
+  border-bottom: 1rpx solid #f0f4fa;
+}
+
+.member:last-child {
+  border-bottom: none;
+}
+
+.member-avatar {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 36rpx;
+  background-color: #eef2f8;
+  flex: 0 0 auto;
+}
+
+.member-avatar-empty {
+  font-size: 26rpx;
+  line-height: 72rpx;
+  text-align: center;
+  color: #2563eb;
+}
+
+.member-main {
+  flex: 1;
+  margin-left: 20rpx;
+  overflow: hidden;
+}
+
+.member-name {
+  display: block;
+  font-size: 30rpx;
+  color: #1f2937;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.member-role {
+  display: block;
+  margin-top: 2rpx;
+  font-size: 22rpx;
+  color: #94a3b8;
+}
+
+.member-del {
+  padding: 6rpx 0 6rpx 20rpx;
+  font-size: 26rpx;
+  color: #dc2626;
+}
+
+/* 同行自己的退出入口：不显眼但找得到 */
+.leave {
+  margin-top: 24rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  border-radius: 16rpx;
+  border: 2rpx solid #fecaca;
+  color: #dc2626;
+  font-size: 28rpx;
+}

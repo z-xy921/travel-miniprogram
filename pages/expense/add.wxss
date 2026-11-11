@@ -1,0 +1,101 @@
+.amount-label {
+  font-size: 26rpx;
+  color: #64748b;
+}
+
+.amount-show {
+  margin: 12rpx 0 20rpx;
+  font-size: 64rpx;
+  font-weight: 700;
+  color: #2563eb;
+  line-height: 1.2;
+}
+
+.amount-input {
+  flex: 1;
+  height: 92rpx;
+  font-size: 34rpx;
+}
+
+.yuan {
+  margin-left: 12rpx;
+  font-size: 28rpx;
+  color: #64748b;
+}
+
+.quick-row {
+  display: flex;
+  margin-top: 20rpx;
+}
+
+.quick {
+  flex: 1;
+  margin-right: 14rpx;
+  height: 72rpx;
+  line-height: 72rpx;
+  text-align: center;
+  border-radius: 36rpx;
+  background-color: #eef2f8;
+  font-size: 28rpx;
+  color: #475569;
+}
+
+.quick:last-child {
+  margin-right: 0;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 14rpx;
+}
+
+.date-box {
+  height: 64rpx;
+  line-height: 64rpx;
+  padding: 0 24rpx;
+  border-radius: 32rpx;
+  background-color: #eef2f8;
+  font-size: 26rpx;
+  color: #475569;
+}
+
+.split-row {
+  display: flex;
+  align-items: center;
+  margin-top: 18rpx;
+}
+
+.split-check {
+  width: 44rpx;
+  height: 44rpx;
+  line-height: 44rpx;
+  text-align: center;
+  border-radius: 50%;
+  border: 2rpx solid #cbd5e1;
+  color: #ffffff;
+  font-size: 24rpx;
+}
+
+.split-check.is-on {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+.split-name {
+  flex: 1;
+  margin-left: 18rpx;
+  font-size: 28rpx;
+  color: #1f2937;
+}
+
+.split-input {
+  width: 180rpx;
+  height: 64rpx;
+  text-align: right;
+  font-size: 30rpx;
+}
+
+.split-warn {
+  color: #dc2626;
+}

@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "行程安排",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "day-tabs": "../../components/day-tabs/day-tabs",
+    "poi-card": "../../components/poi-card/poi-card",
+    "empty-state": "../../components/empty-state/empty-state"
+  }
+}

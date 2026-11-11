@@ -1,0 +1,62 @@
+.dates {
+  display: flex;
+  align-items: center;
+}
+
+.date-box {
+  height: 92rpx;
+  line-height: 92rpx;
+  padding: 0 24rpx;
+  background-color: #f5f7fb;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+}
+
+.date-sep {
+  margin: 0 16rpx;
+  color: #94a3b8;
+  font-size: 26rpx;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.modes {
+  display: flex;
+}
+
+.mode {
+  flex: 1;
+  margin-right: 16rpx;
+  padding: 22rpx;
+  border-radius: 18rpx;
+  background-color: #f5f7fb;
+  border: 2rpx solid transparent;
+}
+
+.mode:last-child {
+  margin-right: 0;
+}
+
+.mode.is-active {
+  background-color: #e8f0fe;
+  border-color: #2563eb;
+}
+
+.mode.is-disabled {
+  opacity: 0.6;
+}
+
+.mode-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.mode-desc {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #64748b;
+}

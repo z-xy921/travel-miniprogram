@@ -1,0 +1,64 @@
+<view class="profile-page">
+  <!-- 头部：纯白卡片，整块可点 -->
+  <view class="p-card head-card" bindtap="onHeadTap">
+    <image
+      wx:if="{{userInfo && userInfo.avatar}}"
+      class="avatar avatar-img"
+      src="{{userInfo.avatar}}"
+      mode="aspectFill"
+    />
+    <view wx:else class="avatar avatar-guest">👤</view>
+
+    <view class="head-info">
+      <view class="head-name">{{userInfo && userInfo.nickname ? userInfo.nickname : '未登录用户'}}</view>
+      <view class="head-link {{userInfo ? 'is-muted' : ''}}">{{userInfo ? '欢迎回来' : '点击登录'}}</view>
+    </view>
+
+    <view class="head-chev">›</view>
+  </view>
+
+  <!-- 数据统计：三等分 + 细竖线 -->
+  <view class="p-card stats-card">
+    <view class="stat">
+      <view class="stat-value">{{tripCount}}</view>
+      <view class="stat-label">行程</view>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat">
+      <view class="stat-value">{{expenseCount}}</view>
+      <view class="stat-label">记账笔数</view>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat">
+      <view class="stat-value">{{totalText}}</view>
+      <view class="stat-label">累计花费</view>
+    </view>
+  </view>
+
+  <!-- 功能列表 -->
+  <view class="p-card menu-card">
+    <view class="menu-item" bindtap="onInvite">
+      <view class="menu-left">
+        <text class="menu-icon">🚪</text>
+        <text class="menu-text">加入同行的行程</text>
+      </view>
+      <text class="menu-chev">›</text>
+    </view>
+
+    <view class="menu-item" bindtap="onAbout">
+      <view class="menu-left">
+        <text class="menu-icon">ℹ️</text>
+        <text class="menu-text">关于我们</text>
+      </view>
+      <text class="menu-chev">›</text>
+    </view>
+
+    <view class="menu-item" wx:if="{{userInfo}}" bindtap="onLogout">
+      <view class="menu-left">
+        <text class="menu-icon">🚶</text>
+        <text class="menu-text is-danger">退出登录</text>
+      </view>
+      <text class="menu-chev">›</text>
+    </view>
+  </view>
+</view>

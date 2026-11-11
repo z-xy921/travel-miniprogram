@@ -1,0 +1,16 @@
+.row {
+  display: flex;
+  align-items: center;
+  margin-top: 24rpx;
+}
+
+.row .btn-sm {
+  margin-left: 16rpx;
+}
+
+.error-text {
+  margin-top: 12rpx;
+  font-size: 26rpx;
+  line-height: 1.5;
+  color: #b91c1c;
+}

@@ -1,0 +1,47 @@
+<view class="page">
+  <view class="card center" wx:if="{{error}}">
+    <view class="muted">{{error}}</view>
+    <view class="btn-sm" style="margin-top: 20rpx;" bindtap="onRetry">重试</view>
+  </view>
+
+  <block wx:elif="{{trip}}">
+    <day-tabs tabs="{{tabs}}" active="{{activeDay}}" bind:change="onDayChange" />
+
+    <view class="day-head between">
+      <text class="day-count">{{dayPhotos.length}} 张照片</text>
+      <text class="tiny">点开看大图，长按删除</text>
+    </view>
+
+    <view class="grid">
+      <view
+        class="shot"
+        wx:for="{{dayPhotos}}"
+        wx:key="_id"
+        data-index="{{index}}"
+        bindtap="onPreview"
+        bindlongpress="onRemovePhoto"
+      >
+        <image class="shot-img" src="{{item.fileID}}" mode="aspectFill" lazy-load="{{true}}" />
+        <view class="shot-time">{{item.timeText}}</view>
+      </view>
+    </view>
+
+    <empty-state
+      wx:if="{{!dayPhotos.length}}"
+      title="这一天还没有照片"
+      desc="拍到的、截图存下来的都可以放进来，按天分开，回看时不会乱。"
+      action="+ 加照片"
+      bind:action="onAddPhoto"
+    />
+  </block>
+
+  <view class="card" wx:else>
+    <view class="muted">加载中…</view>
+  </view>
+
+  <view class="footer-bar">
+    <view class="btn-primary {{saving ? 'is-disabled' : ''}}" bindtap="onAddPhoto">
+      {{saving ? '上传中…' : '+ 加照片'}}
+    </view>
+  </view>
+</view>

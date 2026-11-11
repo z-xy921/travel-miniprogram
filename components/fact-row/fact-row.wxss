@@ -1,0 +1,17 @@
+.fact {
+  display: flex;
+  align-items: flex-start;
+  padding: 8rpx 0;
+  font-size: 26rpx;
+  line-height: 1.5;
+}
+
+.fact-label {
+  flex: 0 0 120rpx;
+  color: #9aa1a9;
+}
+
+.fact-value {
+  flex: 1;
+  color: #374151;
+}

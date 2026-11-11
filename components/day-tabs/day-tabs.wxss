@@ -1,0 +1,31 @@
+.tabs {
+  display: flex;
+  /* 横向 scroll-view 不显式给高时，内容会溢出到下面的浮层上 */
+  height: 92rpx;
+  box-sizing: border-box;
+  white-space: nowrap;
+  padding: 4rpx 0 12rpx;
+}
+
+.tab {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 130rpx;
+  height: 76rpx;
+  margin-right: 14rpx;
+  padding: 0 24rpx;
+  border-radius: 38rpx;
+  background-color: #ffffff;
+  color: #4b5563;
+  font-size: 26rpx;
+  box-sizing: border-box;
+}
+
+.tab.is-active {
+  background: linear-gradient(135deg, #2563eb 0%, #4f8bf9 100%);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 8rpx 18rpx rgba(37, 99, 235, 0.24);
+}

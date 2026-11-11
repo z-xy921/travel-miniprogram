@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "位置关系",
+  "usingComponents": {
+    "day-tabs": "../../components/day-tabs/day-tabs"
+  }
+}

@@ -1,0 +1,54 @@
+<view class="page">
+  <view class="card center" wx:if="{{error}}">
+    <view class="muted">{{error}}</view>
+    <view class="btn-sm" style="margin-top: 20rpx;" bindtap="onRetry">重试</view>
+  </view>
+
+  <block wx:elif="{{trip}}">
+    <view class="card">
+      <view class="list-title">{{trip.title}}</view>
+      <view class="muted" style="margin-top: 6rpx;">共 {{memberCount}} 人同行</view>
+    </view>
+
+    <view class="card" wx:if="{{isOwner}}">
+      <view class="section-title">邀请码</view>
+      <view class="code">{{inviteCode ? inviteCode : '生成中…'}}</view>
+      <view class="muted">6 位，有效期到 {{expireText}}。在「我的 → 加入同行的行程」输入即可。</view>
+      <view class="row">
+        <view class="btn-ghost" wx:if="{{inviteCode}}" bindtap="onCopy">复制</view>
+        <button class="btn-primary share-btn" open-type="share">分享给同行</button>
+      </view>
+    </view>
+
+    <view class="card" wx:else>
+      <view class="section-title">你是这趟的同行</view>
+      <view class="muted">邀请码由创建者生成；如果不想再参与这趟，可以自己退出。</view>
+      <view class="leave" bindtap="onLeave">退出这趟行程</view>
+    </view>
+
+    <view class="card">
+      <view class="section-title">成员</view>
+      <view class="member" wx:for="{{members}}" wx:key="openid">
+        <image wx:if="{{item.avatar}}" class="member-avatar" src="{{item.avatar}}" mode="aspectFill"/>
+        <view wx:else class="member-avatar member-avatar-empty">{{item.isOwner ? '主' : '伴'}}</view>
+        <view class="member-main">
+          <text class="member-name">{{item.name}}</text>
+          <text class="member-role">{{item.roleText}}</text>
+        </view>
+        <text
+          class="member-del"
+          wx:if="{{isOwner && !item.isOwner}}"
+          data-openid="{{item.openid}}"
+          bindtap="onRemoveMember"
+        >移除</text>
+      </view>
+      <view class="muted" wx:if="{{!members.length}}">还没有同行加入。</view>
+    </view>
+
+    <view class="foot tiny">同行加入后可以和大家一起改行程、共用一本账。</view>
+  </block>
+
+  <view class="card" wx:else>
+    <view class="muted">加载中…</view>
+  </view>
+</view>

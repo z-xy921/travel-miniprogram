@@ -1,0 +1,183 @@
+<view class="page">
+  <view class="card">
+    <view class="field">
+      <view class="field-label">选点城市（可选）</view>
+      <view class="field-box">
+        <input
+          class="field-input"
+          value="{{cityQuery}}"
+          bindinput="onCityInput"
+          placeholder="搜索城市或省份，如 杭州、云南"
+          placeholder-class="ph"
+          maxlength="20"
+        />
+      </view>
+      <view class="city-list" wx:if="{{cityOptions.length}}">
+        <view
+          class="city-item"
+          wx:for="{{cityOptions}}"
+          wx:key="name"
+          data-name="{{item.name}}"
+          bindtap="onPickCity"
+        >
+          <text class="city-name">{{item.name}}</text>
+          <text class="city-sub" wx:if="{{item.sub}}">{{item.sub}}</text>
+        </view>
+      </view>
+      <view class="field-tip" wx:if="{{cityText}}">选点时会先定位到 {{cityText}}</view>
+      <view class="field-tip" wx:elif="{{center}}">选点时会先定位到行程已有地点附近</view>
+      <view class="field-tip" wx:else>选点时会先定位到你的当前位置</view>
+    </view>
+
+    <view class="field">
+      <view class="field-label">地点名称</view>
+      <view class="field-box">
+        <input
+          class="field-input"
+          value="{{form.name}}"
+          data-field="name"
+          bindinput="onInput"
+          placeholder="例如 西湖断桥"
+          placeholder-class="ph"
+          maxlength="30"
+        />
+      </view>
+    </view>
+
+    <view class="field">
+      <view class="field-label">地址</view>
+      <view class="field-box">
+        <input
+          class="field-input"
+          value="{{form.address}}"
+          data-field="address"
+          bindinput="onInput"
+          placeholder="可以手填，也可以直接选点"
+          placeholder-class="ph"
+          maxlength="60"
+        />
+        <view class="locate" bindtap="onChooseLocation">{{located ? '重新选点' : '选点'}}</view>
+      </view>
+      <view class="field-tip" wx:if="{{located}}">
+        已选位置，会显示在地图页
+        <text class="text-danger" style="margin-left: 16rpx;" bindtap="onClearLocation">清除位置</text>
+      </view>
+      <view class="field-tip" wx:else>选点后会自动填好名称和地址；不选点也能保存，只是地图上看不到</view>
+    </view>
+
+    <view class="field">
+      <view class="field-label">分类</view>
+      <view class="chips">
+        <view
+          class="chip {{form.category === item ? 'is-active' : ''}}"
+          wx:for="{{categories}}"
+          wx:key="*this"
+          data-key="{{item}}"
+          bindtap="onCategory"
+        >{{item}}</view>
+      </view>
+    </view>
+
+    <view class="field" style="margin-bottom: 0;">
+      <view class="field-label">预计到达</view>
+      <view class="row">
+        <picker mode="time" value="{{form.plannedTime}}" bindchange="onTime">
+          <view class="time-box">{{form.plannedTime || '选择时间'}}</view>
+        </picker>
+        <text class="tiny" style="margin-left: 16rpx;">不填则排在当天最后</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="field" style="margin-bottom: 0;">
+      <view class="field-label">停留时长</view>
+      <view class="chips">
+        <view
+          class="chip {{form.durationMin === item ? 'is-active' : ''}}"
+          wx:for="{{durations}}"
+          wx:key="*this"
+          data-key="{{item}}"
+          bindtap="onDuration"
+        >{{item}} 分钟</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="between" style="margin-bottom: 12rpx;">
+      <view class="section-title" style="margin-bottom: 0;">已知信息（选填）</view>
+      <view class="badge {{form.factsPending ? 'badge-pending' : 'badge-done'}}">
+        {{form.factsPending ? '待核实' : '已核实'}}
+      </view>
+    </view>
+    <view class="muted" style="margin-bottom: 16rpx;">
+      从攻略或口信听来的信息，建议到现场核实后再关掉「待核实」。
+    </view>
+
+    <view class="fact-input">
+      <text class="fact-name">营业时间</text>
+      <input
+        class="fact-field"
+        value="{{form.facts.open}}"
+        data-key="open"
+        bindinput="onFactInput"
+        placeholder="例如 08:00-17:30"
+        placeholder-class="ph"
+        maxlength="40"
+      />
+    </view>
+    <view class="fact-input">
+      <text class="fact-name">预约</text>
+      <input
+        class="fact-field"
+        value="{{form.facts.reserve}}"
+        data-key="reserve"
+        bindinput="onFactInput"
+        placeholder="例如 需提前 1 天在公众号预约"
+        placeholder-class="ph"
+        maxlength="40"
+      />
+    </view>
+    <view class="fact-input">
+      <text class="fact-name">费用</text>
+      <input
+        class="fact-field"
+        value="{{form.facts.fee}}"
+        data-key="fee"
+        bindinput="onFactInput"
+        placeholder="例如 门票 40 元"
+        placeholder-class="ph"
+        maxlength="40"
+      />
+    </view>
+
+    <view class="switch-row">
+      <text class="switch-label">这些信息我还没核实</text>
+      <switch checked="{{form.factsPending}}" color="#2563eb" bindchange="onPending" />
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="field" style="margin-bottom: 0;">
+      <view class="field-label">备注</view>
+      <textarea
+        class="field-textarea"
+        value="{{form.note}}"
+        data-field="note"
+        bindinput="onInput"
+        placeholder="要带什么、跟谁去、入口在哪一层……"
+        placeholder-class="ph"
+        maxlength="200"
+      />
+    </view>
+  </view>
+
+  <view class="del" wx:if="{{poiId}}" bindtap="onRemove">删除这个地点</view>
+
+  <view class="footer-bar">
+    <view class="btn-primary {{saving ? 'is-disabled' : ''}}" bindtap="onSave">
+      {{saving ? '保存中…' : '保存'}}
+    </view>
+  </view>
+</view>

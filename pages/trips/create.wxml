@@ -1,0 +1,100 @@
+<view class="page">
+  <view class="card">
+    <view class="field">
+      <view class="field-label">目的地</view>
+      <view class="field-box">
+        <input
+          class="field-input"
+          value="{{destination}}"
+          data-field="destination"
+          bindinput="onInput"
+          placeholder="例如 杭州"
+          placeholder-class="ph"
+          maxlength="20"
+        />
+      </view>
+    </view>
+
+    <view class="field">
+      <view class="field-label">行程名称（选填，默认用目的地）</view>
+      <view class="field-box">
+        <input
+          class="field-input"
+          value="{{title}}"
+          data-field="title"
+          bindinput="onInput"
+          placeholder="例如 周末西湖两日"
+          placeholder-class="ph"
+          maxlength="20"
+        />
+      </view>
+    </view>
+
+    <view class="field">
+      <view class="field-label">出发 / 返回日期</view>
+      <view class="dates">
+        <picker mode="date" value="{{startDate}}" bindchange="onStartDate">
+          <view class="date-box">{{startDate}}</view>
+        </picker>
+        <text class="date-sep">至</text>
+        <picker mode="date" value="{{endDate}}" start="{{startDate}}" bindchange="onEndDate">
+          <view class="date-box">{{endDate}}</view>
+        </picker>
+      </view>
+      <view class="field-tip">共 {{daysText}}，最多 15 天</view>
+    </view>
+
+    <view class="field">
+      <view class="field-label">怎么去（可多选）</view>
+      <view class="chips">
+        <view
+          class="chip {{item.active ? 'is-active' : ''}}"
+          wx:for="{{transports}}"
+          wx:key="key"
+          data-key="{{item.key}}"
+          bindtap="onTransport"
+        >{{item.label}}</view>
+      </view>
+    </view>
+
+    <view class="field">
+      <view class="field-label">预算（元，选填）</view>
+      <view class="field-box">
+        <input
+          class="field-input"
+          type="digit"
+          value="{{budget}}"
+          data-field="budget"
+          bindinput="onInput"
+          placeholder="例如 1200"
+          placeholder-class="ph"
+        />
+      </view>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{!editing}}">
+    <view class="section-title">出行模式</view>
+    <view class="modes">
+      <view class="mode is-active">
+        <view class="mode-title">单人出行</view>
+        <view class="mode-desc">自己排、自己改</view>
+      </view>
+      <view class="mode is-disabled" bindtap="onGroupTap">
+        <view class="mode-title">多人出行</view>
+        <view class="mode-desc">建好后再邀请同行</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card" wx:else>
+    <view class="section-title">保存修改</view>
+    <view class="muted">保存后，同行的伙伴下次打开就能看到新的安排。</view>
+  </view>
+
+  <view class="footer-bar">
+    <view class="btn-primary {{submitting ? 'is-disabled' : ''}}" bindtap="onSubmit">
+      {{submitting ? (editing ? '保存中…' : '创建中…') : (editing ? '保存修改' : '创建行程')}}
+    </view>
+  </view>
+</view>

@@ -1,0 +1,95 @@
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.locate {
+  flex: 0 0 auto;
+  margin-left: 12rpx;
+  padding: 0 24rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  border-radius: 30rpx;
+  background-color: #e8f0fe;
+  color: #2563eb;
+  font-size: 26rpx;
+}
+
+.city-list {
+  margin-top: 8rpx;
+  border-radius: 14rpx;
+  background-color: #f7fafd;
+  overflow: hidden;
+}
+
+.city-item {
+  display: flex;
+  align-items: center;
+  height: 84rpx;
+  padding: 0 24rpx;
+  border-bottom: 2rpx solid #edf1f7;
+}
+
+.city-item:last-child {
+  border-bottom: none;
+}
+
+.city-name {
+  font-size: 28rpx;
+  color: #1f2937;
+}
+
+.city-sub {
+  margin-left: 12rpx;
+  font-size: 22rpx;
+  color: #94a3b8;
+}
+
+.time-box {
+  height: 76rpx;
+  line-height: 76rpx;
+  padding: 0 28rpx;
+  border-radius: 38rpx;
+  background-color: #eef2f8;
+  font-size: 28rpx;
+  color: #1f2937;
+}
+
+.fact-input {
+  display: flex;
+  align-items: center;
+  min-height: 84rpx;
+  border-bottom: 2rpx solid #edf1f7;
+}
+
+.fact-name {
+  flex: 0 0 130rpx;
+  font-size: 26rpx;
+  color: #64748b;
+}
+
+.fact-field {
+  flex: 1;
+  height: 84rpx;
+  font-size: 28rpx;
+}
+
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20rpx;
+}
+
+.switch-label {
+  font-size: 26rpx;
+  color: #475569;
+}
+
+.del {
+  margin: 8rpx 0 40rpx;
+  text-align: center;
+  font-size: 28rpx;
+  color: #dc2626;
+  padding: 24rpx 0;
+}

@@ -1,0 +1,13 @@
+schema_version: 1
+module_path: ""
+title: 旅行计划小程序入口
+scope:
+    - app.js
+    - app.json
+    - app.wxss
+    - project.config.json
+    - project.private.config.json
+    - sitemap.json
+source_files: []
+depends_on: []
+related_to: []

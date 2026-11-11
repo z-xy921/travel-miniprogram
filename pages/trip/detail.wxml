@@ -1,0 +1,92 @@
+<view class="page">
+  <view class="card center" wx:if="{{error}}">
+    <view class="muted">{{error}}</view>
+    <view class="btn-sm" style="margin-top: 20rpx;" bindtap="onRetry">重试</view>
+  </view>
+
+  <block wx:elif="{{trip}}">
+    <view class="card">
+      <view class="between">
+        <view class="list-title">{{trip.title}} <text class="badge badge-pending" wx:if="{{readonly}}">只读预览</text></view>
+        <view class="tiny">{{trip.dateText}}</view>
+      </view>
+      <view class="muted" style="margin-top: 8rpx;">
+        共 {{trip.days.length}} 天 · 已排 {{trip.poiCount}} 个地点<text wx:if="{{!readonly}}"> · {{memberCount}} 人同行</text>
+      </view>
+      <view class="between" style="margin-top: 8rpx;">
+        <text class="muted">预算 {{budgetText ? budgetText : '未填'}} · {{statusText}}</text>
+        <text class="day-link" wx:if="{{!readonly}}" bindtap="onToggleStatus">{{statusAction}}</text>
+      </view>
+      <view class="day-link" style="margin-top: 10rpx;" wx:if="{{isOwner}}" bindtap="onOpenInvite">邀请同行一起改 ›</view>
+      <view class="day-link" style="margin-top: 10rpx;" wx:elif="{{readonly}}" bindtap="onOpenInvite">登录后可一起编辑 ›</view>
+      <view class="day-link" style="margin-top: 10rpx;" wx:else bindtap="onOpenInvite">{{memberCount}} 人同行 · 成员与退出 ›</view>
+      <view class="day-actions">
+        <block wx:if="{{!readonly}}">
+          <view class="btn-sm" bindtap="onAddDay">+ 加一天</view>
+          <view class="btn-sm" wx:if="{{canRemoveLastDay}}" bindtap="onRemoveDay">− 减一天</view>
+        </block>
+        <view class="btn-sm" bindtap="onOpenMap">看地图</view>
+        <view class="btn-sm {{editing ? 'is-primary' : ''}}" wx:if="{{!readonly}}" bindtap="onToggleEdit">
+          {{editing ? '完成调整' : '调整顺序'}}
+        </view>
+        <view class="btn-sm" wx:if="{{!readonly}}" bindtap="onEditTrip">编辑行程</view>
+      </view>
+    </view>
+
+    <view class="card tools">
+      <view class="tool" bindtap="onOpenJournal">
+        <view class="tool-name">手帐</view>
+        <view class="tool-desc">按天翻照片</view>
+      </view>
+      <view class="tool" bindtap="onRemind">
+        <view class="tool-name">出发提醒</view>
+        <view class="tool-desc">临出发提醒一次</view>
+      </view>
+      <view class="tool" bindtap="onCopyTrip">
+        <view class="tool-name">复制这趟</view>
+        <view class="tool-desc">日期从今天起算</view>
+      </view>
+    </view>
+
+    <day-tabs tabs="{{tabs}}" active="{{activeDay}}" bind:change="onDayChange" />
+
+    <view class="day-head between">
+      <text class="day-count">{{dayPois.length}} 个地点</text>
+      <text class="day-link" wx:if="{{dayPois.length > 1}}" bindtap="onReschedule">按顺序重排时间</text>
+    </view>
+
+    <poi-card
+      wx:for="{{dayPois}}"
+      wx:key="_id"
+      item="{{item}}"
+      editing="{{editing}}"
+      bind:edit="onEditPoi"
+      bind:togglefacts="onToggleFacts"
+      bind:up="onUp"
+      bind:down="onDown"
+      bind:remove="onRemovePoi"
+    />
+
+    <empty-state
+      wx:if="{{!dayPois.length}}"
+      title="这一天还是空的"
+      desc="把想去的地点加进来，顺序、停留时长、已知信息都能改。"
+      action="+ 加地点"
+      bind:action="onAdd"
+    />
+
+    <view class="tip card" wx:if="{{dayPois.length}}">
+      小提示：先看地图再调整顺序，能少走回头路。
+    </view>
+  </block>
+
+  <view class="del" wx:if="{{trip && isOwner}}" bindtap="onRemoveTrip">删除这个行程</view>
+
+  <view class="card" wx:if="{{!trip}}">
+    <view class="muted">加载中…</view>
+  </view>
+
+  <view class="footer-bar" wx:if="{{trip}}">
+    <view class="btn-primary" bindtap="onAdd">+ 加地点</view>
+  </view>
+</view>

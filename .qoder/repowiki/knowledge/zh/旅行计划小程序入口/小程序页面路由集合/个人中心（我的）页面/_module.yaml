@@ -1,0 +1,12 @@
+schema_version: 1
+module_path: pages/profile_about
+title: 个人中心（我的）页面
+scope:
+    - pages/profile.js
+    - pages/profile.json
+    - pages/profile.wxml
+    - pages/profile.wxss
+source_files: []
+depends_on: []
+related_to:
+    - path: services

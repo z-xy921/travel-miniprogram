@@ -1,0 +1,50 @@
+.page {
+  padding-bottom: 56rpx;
+}
+
+.day-head {
+  padding: 18rpx 8rpx 14rpx;
+}
+
+.day-count {
+  font-size: 26rpx;
+  color: #6b7280;
+}
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -6rpx;
+}
+
+.shot {
+  position: relative;
+  width: 33.333%;
+  padding: 6rpx;
+  box-sizing: border-box;
+}
+
+.shot-img {
+  width: 100%;
+  height: 210rpx;
+  border-radius: 14rpx;
+  background-color: #eef0f2;
+  display: block;
+}
+
+.shot:active .shot-img {
+  opacity: 0.85;
+}
+
+/* 时间压在右下角，半透明底保证在亮照片上也看得清 */
+.shot-time {
+  position: absolute;
+  right: 16rpx;
+  bottom: 16rpx;
+  padding: 2rpx 10rpx;
+  border-radius: 8rpx;
+  background-color: rgba(15, 23, 42, 0.55);
+  color: #ffffff;
+  font-size: 20rpx;
+  line-height: 28rpx;
+}

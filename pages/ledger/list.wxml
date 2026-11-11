@@ -1,0 +1,50 @@
+<view class="ledger-page">
+  <!-- 顶部：极简标题 + 统计小字 -->
+  <view class="head">
+    <view class="head-title">记账</view>
+    <view class="head-sub">{{headSub}}</view>
+  </view>
+
+  <view class="body">
+    <view class="error-card" wx:if="{{error}}">
+      <view class="error-text">{{error}}</view>
+      <view class="error-retry" bindtap="onRetry">重试</view>
+    </view>
+
+    <view class="loading" wx:elif="{{loading}}">加载中…</view>
+
+    <block wx:elif="{{rows.length}}">
+      <view
+        class="bill-card"
+        wx:for="{{rows}}"
+        wx:key="_id"
+        data-id="{{item._id}}"
+        bindtap="onOpen"
+      >
+        <view class="bill-top">
+          <view class="bill-title">{{item.title}}</view>
+          <view class="bill-amount">{{item.totalText}}</view>
+        </view>
+        <view class="bill-foot">
+          <text class="bill-date">{{item.dateText}}</text>
+          <text class="bill-count">{{item.countText}} ›</text>
+        </view>
+      </view>
+    </block>
+
+    <!-- 空状态：垂直 + 水平居中 -->
+    <view class="empty" wx:elif="{{needLogin}}">
+      <view class="empty-icon">🧾</view>
+      <view class="empty-title">记账是私有的</view>
+      <view class="empty-desc">登录后查看专属账单与 AA 分账</view>
+      <view class="empty-btn" bindtap="onGoLogin">去登录</view>
+    </view>
+
+    <view class="empty" wx:else>
+      <view class="empty-icon">🧾</view>
+      <view class="empty-title">还没有账本</view>
+      <view class="empty-desc">账本跟着行程走：先建一个行程，再往里记一笔</view>
+      <view class="empty-btn" bindtap="onCreateTrip">去建行程</view>
+    </view>
+  </view>
+</view>

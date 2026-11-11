@@ -1,0 +1,10 @@
+schema_version: 1
+module_path: services
+title: 小程序云函数服务封装层
+scope:
+    - services/
+source_files: []
+depends_on: []
+related_to:
+    - path: pages
+    - path: pages/profile_about

@@ -1,0 +1,15 @@
+.page {
+  padding-bottom: 60rpx;
+}
+
+.text {
+  font-size: 28rpx;
+  color: #475569;
+  line-height: 1.75;
+  margin-top: 10rpx;
+}
+
+.foot {
+  margin-top: 40rpx;
+  text-align: center;
+}

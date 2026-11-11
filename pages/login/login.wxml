@@ -1,0 +1,58 @@
+<view class="login-page">
+  <view class="hero">
+    <view class="hero-badge">
+      <text class="hero-emoji">🧳</text>
+      <text class="hero-emoji hero-emoji-fly">✈️</text>
+      <text class="hero-emoji">🗺️</text>
+    </view>
+    <view class="hero-title">旅行计划</view>
+    <view class="hero-slogan">轻松规划，记录美好旅程</view>
+  </view>
+
+  <view class="actions">
+    <button class="login-btn" bindtap="onTapLogin">微信一键登录</button>
+    <view class="skip" bindtap="onTapSkip">暂不登录，先随便看看 ›</view>
+
+    <view class="agree-row">
+      <checkbox-group bindchange="onAgreeChange">
+        <checkbox class="agree-check" value="agree" checked="{{agreed}}" color="#2563eb"/>
+      </checkbox-group>
+      <view class="agree-text">
+        我已阅读并同意<navigator class="agree-link" url="/pages/about">《用户隐私保护指引》</navigator>和<navigator class="agree-link" url="/pages/about">《服务协议》</navigator>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 半屏弹层：选头像 + 填昵称，确认后才算登录 -->
+<view class="modal-mask" wx:if="{{showProfileModal}}" bindtap="onTapMaskClose">
+  <view class="modal-sheet" catchtap="noop">
+    <view class="sheet-handle"></view>
+    <view class="modal-title">完善个人信息</view>
+    <view class="modal-sub">头像和昵称会展示给同行的伙伴</view>
+
+    <!-- 微信官方规范：open-type="chooseAvatar" -->
+    <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+      <view class="avatar-preview avatar-empty" wx:if="{{!avatarUrl}}">👤</view>
+      <!-- fileID/临时路径都可被 image 直接渲染 -->
+      <image wx:else class="avatar-preview" src="{{avatarUrl}}" mode="aspectFill"/>
+      <view class="avatar-edit">选择头像</view>
+    </button>
+
+    <!-- 微信官方规范：type="nickname"，支持键盘安全区快捷填入 -->
+    <form>
+      <input
+        class="nickname-input"
+        type="nickname"
+        name="nickname"
+        placeholder="请输入昵称"
+        placeholder-class="nickname-ph"
+        value="{{nickname}}"
+        bindinput="onNicknameInput"
+        bindblur="onNicknameBlur"
+      />
+    </form>
+
+    <button class="confirm-btn {{avatarUrl && nickname ? '' : 'is-disabled'}}" bindtap="onTapConfirm">确认并登录</button>
+  </view>
+</view>

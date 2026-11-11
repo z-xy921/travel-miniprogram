@@ -1,0 +1,54 @@
+<view class="trip-page">
+  <!-- 顶部：极简欢迎语 + 小头像 -->
+  <view class="head">
+    <view class="head-text">
+      <view class="head-title">准备去哪？</view>
+      <view class="head-sub">已记录 {{tripCount}} 次旅行</view>
+    </view>
+    <image wx:if="{{avatar}}" class="head-avatar" src="{{avatar}}" mode="aspectFill" />
+    <view wx:else class="head-avatar head-avatar-guest" bindtap="onGoLogin">👤</view>
+  </view>
+
+  <view class="body">
+    <view class="error-card" wx:if="{{error}}">
+      <view class="error-text">{{error}}</view>
+      <view class="error-retry" bindtap="onRetry">重试</view>
+    </view>
+
+    <view class="loading" wx:elif="{{loading}}">加载中…</view>
+
+    <block wx:elif="{{trips.length}}">
+      <view
+        class="trip-card"
+        wx:for="{{trips}}"
+        wx:key="_id"
+        data-id="{{item._id}}"
+        bindtap="onOpen"
+      >
+        <view class="trip-top">
+          <view class="trip-title">{{item.title}}</view>
+          <view class="trip-chev">›</view>
+        </view>
+        <view class="trip-tags">
+          <text class="tag {{item.statusClass}}">{{item.statusText}}</text>
+          <text class="tag tag-plain" wx:if="{{item.modeText}}">{{item.modeText}}</text>
+        </view>
+        <view class="trip-line">{{item.dateText}} · {{item.daysText}}</view>
+        <view class="trip-line trip-line-dim">{{item.poiText}}</view>
+      </view>
+    </block>
+
+    <!-- 空状态：垂直 + 水平居中 -->
+    <view class="empty" wx:else>
+      <view class="empty-icon">🎒</view>
+      <view class="empty-title">还没有旅行计划</view>
+      <view class="empty-desc">{{needLogin ? '登录后开启你的第一场旅行' : '选好日期和目的地，再一天一天往里加地点'}}</view>
+      <view class="empty-btn" wx:if="{{needLogin}}" bindtap="onGoLogin">去登录</view>
+    </view>
+  </view>
+
+  <!-- 新建行程：独立大按钮 -->
+  <view class="foot">
+    <view class="btn-new" bindtap="onCreate">+ 新建行程</view>
+  </view>
+</view>

@@ -1,0 +1,25 @@
+<view class="page">
+  <view class="card">
+    <view class="section-title">这个工具做什么</view>
+    <view class="body">它只做一件事：把你给的时间、预算、人数、交通方式，排成一条 2 天 1 夜能照着走的路，并且每一站都留一个备选。它不替你订票，也不替你判断现场情况。</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">AI 说什么、不说什么</view>
+    <view class="body">编排（去哪几站、什么顺序、为什么这么排）由 AI 给建议。</view>
+    <view class="body">事实（营业时间、是否需要预约、票价、自驾与公交时长）AI 只给推测值，界面上统一标「待核实」。</view>
+    <view class="body">这些推测可能过时或有误，进门前请用官方渠道再确认一次。</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">数据存在哪</view>
+    <view class="body">路书只存在你手机本机，最多保留最近 10 份，不上传、不联网同步。</view>
+    <view class="body">清除小程序缓存会一并删除这些记录。</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">当前版本</view>
+    <view class="body">{{version}}</view>
+    <view class="body">路书内容为内置示例，用于验证流程；联网生成在后续版本接入。</view>
+  </view>
+</view>

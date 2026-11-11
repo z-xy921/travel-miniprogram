@@ -1,0 +1,44 @@
+<view class="page">
+  <view class="card">
+    <view class="section-title">关于我们</view>
+    <view class="text">旅行计划是一个陪你安排行程、和同行一起记账的小工具。把想去的地方排进每一天，路上少走回头路，花销也能一眼看清。</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">你的数据</view>
+    <view class="text">行程、地点、账目与照片保存在云端，换手机用同一个微信登录就能看到。</view>
+    <view class="text">这些内容只有你和被邀请的同行可以查看，我们不会提供给第三方，也不会用于广告。</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">多人同行</view>
+    <view class="text">创建者在行程里生成 6 位邀请码或直接转发卡片，对方 7 天内加入即可一起编辑行程、共同记账。</view>
+    <view class="text">两个人同时修改同一趟行程时，后提交的一方会看到提醒，可以选择刷新后再改，避免互相覆盖。</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">记账与结算</view>
+    <view class="text">每一笔都可以选择谁付的钱、谁一起分摊，也支持手动修改每个人的金额。</view>
+    <view class="text">结算页会算出每个人该收还是该补，并给出尽量少的转账建议，转账仍需你自己操作。</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">手帐与提醒</view>
+    <view class="text">手帐按天归档照片，方便回看每一站的记录。</view>
+    <view class="text">开启「出发提醒」后，出发前一天会收到一条微信通知，点开即可回到这趟行程。</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">隐私保护指引</view>
+    <view class="text">我们仅收集提供服务所必需的信息：微信登录产生的用户标识，以及你主动选择或填写的头像与昵称，用于在协同行程中展示成员身份。</view>
+    <view class="text">你可以随时退出登录，或删除行程来移除相应内容。</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">服务协议</view>
+    <view class="text">本小程序提供行程规划与多人记账工具服务，行程建议与地点信息仅供参考，出发前请自行核实营业时间、票价等关键信息。</view>
+    <view class="text">请合理使用本服务，不利用其从事任何违法违规活动。</view>
+  </view>
+
+  <view class="foot tiny">旅行计划</view>
+</view>

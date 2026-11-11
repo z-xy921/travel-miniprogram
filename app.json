@@ -1,0 +1,59 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/trips/list",
+    "pages/trips/create",
+    "pages/trips/invite",
+    "pages/trips/join",
+    "pages/trip/detail",
+    "pages/trip/map",
+    "pages/trip/journal",
+    "pages/poi/edit",
+    "pages/ledger/list",
+    "pages/expense/add",
+    "pages/expense/list",
+    "pages/profile",
+    "pages/about"
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTitleText": "旅行计划",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f4f7fc",
+    "backgroundColorTop": "#f4f7fc",
+    "backgroundColorBottom": "#f4f7fc"
+  },
+  "tabBar": {
+    "color": "#94a3b8",
+    "selectedColor": "#2563eb",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/trips/list",
+        "text": "行程"
+      },
+      {
+        "pagePath": "pages/ledger/list",
+        "text": "记账"
+      },
+      {
+        "pagePath": "pages/profile",
+        "text": "我的"
+      }
+    ]
+  },
+  "requiredPrivateInfos": [
+    "chooseLocation",
+    "getLocation"
+  ],
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于在地图上显示你的当前位置，方便判断与各地点之间的距离"
+    }
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

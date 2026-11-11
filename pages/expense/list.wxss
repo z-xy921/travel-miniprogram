@@ -1,0 +1,176 @@
+.summary-label {
+  font-size: 26rpx;
+  color: #64748b;
+}
+
+.summary-total {
+  margin-top: 8rpx;
+  font-size: 56rpx;
+  font-weight: 700;
+  color: #2563eb;
+  line-height: 1.2;
+}
+
+.summary-meta {
+  margin-top: 8rpx;
+  font-size: 26rpx;
+  color: #64748b;
+}
+
+.bars {
+  margin-top: 22rpx;
+  padding-top: 18rpx;
+  border-top: 2rpx solid #edf1f7;
+}
+
+.bar-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.bar-name {
+  flex: 0 0 100rpx;
+  font-size: 24rpx;
+  color: #64748b;
+}
+
+.bar-track {
+  flex: 1;
+  height: 14rpx;
+  border-radius: 7rpx;
+  background-color: #edf1f7;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 14rpx;
+  border-radius: 7rpx;
+  background: linear-gradient(90deg, #2563eb 0%, #60a5fa 100%);
+}
+
+.bar-value {
+  flex: 0 0 130rpx;
+  text-align: right;
+  font-size: 24rpx;
+  color: #475569;
+}
+
+.group {
+  margin-bottom: 24rpx;
+}
+
+.group-head {
+  padding: 0 8rpx 12rpx;
+}
+
+.group-date {
+  font-size: 26rpx;
+  color: #64748b;
+}
+
+.group-total {
+  font-size: 26rpx;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 18rpx;
+  padding: 22rpx 24rpx;
+  margin-bottom: 10rpx;
+  box-shadow: 0 4rpx 14rpx rgba(37, 99, 235, 0.05);
+}
+
+.item:active {
+  background-color: #f8faff;
+}
+
+.item-cat {
+  flex: 0 0 96rpx;
+  font-size: 24rpx;
+  color: #64748b;
+}
+
+.item-note {
+  flex: 1;
+  font-size: 28rpx;
+  color: #1f2937;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.item-amount {
+  flex: 0 0 auto;
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.settle-row {
+  display: flex;
+  align-items: center;
+  margin-top: 16rpx;
+}
+
+.settle-name {
+  flex: 1;
+  font-size: 28rpx;
+  color: #1f2937;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.settle-meta {
+  margin-right: 12rpx;
+  font-size: 22rpx;
+  color: #94a3b8;
+}
+
+.settle-balance {
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.settle-balance.is-owe {
+  color: #dc2626;
+}
+
+.settle-balance.is-get {
+  color: #2563eb;
+}
+
+.settle-transfer {
+  margin-top: 12rpx;
+  font-size: 28rpx;
+  color: #1f2937;
+}
+
+/* 预算进度：超支才变红，没填预算则整块不渲染 */
+.budget {
+  margin-top: 22rpx;
+  padding-top: 18rpx;
+  border-top: 2rpx solid #edf1f7;
+}
+
+.budget-track {
+  margin-top: 10rpx;
+  height: 14rpx;
+  border-radius: 7rpx;
+  background-color: #edf1f7;
+  overflow: hidden;
+}
+
+.budget-fill {
+  height: 14rpx;
+  border-radius: 7rpx;
+  background: linear-gradient(90deg, #2563eb 0%, #60a5fa 100%);
+}
+
+.budget-fill.is-over {
+  background: #dc2626;
+}

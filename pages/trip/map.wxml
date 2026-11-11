@@ -1,0 +1,40 @@
+<view class="map-page">
+  <map
+    id="tripMap"
+    class="map"
+    latitude="{{center.latitude}}"
+    longitude="{{center.longitude}}"
+    scale="{{scale}}"
+    markers="{{markers}}"
+    show-location="{{showMine}}"
+    bindmarkertap="onMarkerTap"
+  ></map>
+
+  <view class="overlay-top">
+    <day-tabs tabs="{{tabs}}" active="{{activeDay}}" bind:change="onDayChange" />
+    <view class="notice" wx:if="{{placed && placed < total}}">
+      这天还有 {{total - placed}} 个地点没有位置信息
+    </view>
+    <view class="notice" wx:if="{{!total}}">这一天还没有地点，先回行程页加几个</view>
+    <view class="notice" wx:if="{{total && !placed}}">这天的地点还没有位置信息</view>
+    <view class="tools">
+      <view class="tool-btn" bindtap="onLocateMe">{{showMine ? '重新定位我' : '显示我的位置'}}</view>
+    </view>
+  </view>
+
+  <view class="sheet" wx:if="{{current}}">
+    <view class="between">
+      <view class="sheet-title">{{current.name}}</view>
+      <view class="sheet-close" bindtap="onCloseCard">×</view>
+    </view>
+    <view class="sheet-line" wx:if="{{current.address}}">{{current.address}}</view>
+    <view class="sheet-line" wx:if="{{current.plannedTime}}">
+      预计 {{current.plannedTime}} 到达
+    </view>
+    <view class="sheet-btn" bindtap="onNavigate">用微信地图导航</view>
+    <view class="sheet-tip">导航路线由微信地图提供</view>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}">加载中…</view>
+  <view class="loading" wx:if="{{error}}">{{error}}</view>
+</view>

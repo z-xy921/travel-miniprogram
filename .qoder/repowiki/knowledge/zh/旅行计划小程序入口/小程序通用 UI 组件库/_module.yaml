@@ -1,0 +1,8 @@
+schema_version: 1
+module_path: components
+title: 小程序通用 UI 组件库
+scope:
+    - components/
+source_files: []
+depends_on: []
+related_to: []

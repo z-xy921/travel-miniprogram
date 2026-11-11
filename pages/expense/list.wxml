@@ -1,0 +1,99 @@
+<view class="page">
+  <view class="card center" wx:if="{{error}}">
+    <view class="muted">{{error}}</view>
+    <view class="btn-sm" style="margin-top: 20rpx;" bindtap="onRetry">重试</view>
+  </view>
+
+  <empty-state
+    wx:elif="{{needLogin}}"
+    emoji="🧾"
+    title="记账是私有的"
+    desc="登录后查看专属账单与 AA 分账"
+    action="去登录"
+    bind:action="onGoLogin"
+  />
+
+  <block wx:elif="{{summary}}">
+    <view class="card">
+      <view class="summary-label">{{trip.title}} · 合计</view>
+      <view class="summary-total">{{summary.totalText}}</view>
+      <view class="summary-meta">{{summary.countText}} · 平均每天 {{summary.dayAvgText}}</view>
+
+      <view class="bars" wx:if="{{summary.bars.length}}">
+        <view class="bar-row" wx:for="{{summary.bars}}" wx:key="category">
+          <text class="bar-name">{{item.category}}</text>
+          <view class="bar-track">
+            <view class="bar-fill" style="width: {{item.width}}%;"></view>
+          </view>
+          <text class="bar-value">{{item.text}}</text>
+        </view>
+      </view>
+
+      <view class="budget" wx:if="{{summary.budget}}">
+        <view class="between">
+          <text class="tiny">预算 {{summary.budget.budgetText}}</text>
+          <text class="tiny {{summary.budget.exceeded ? 'text-danger' : ''}}">{{summary.budget.exceeded ? '已超 ' + summary.budget.leftText : '还剩 ' + summary.budget.leftText}}</text>
+        </view>
+        <view class="budget-track">
+          <view class="budget-fill {{summary.budget.exceeded ? 'is-over' : ''}}" style="width: {{summary.budget.percent}}%;"></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="between" bindtap="onToggleSettle">
+        <text class="section-title" style="margin-bottom: 0;">AA 结算</text>
+        <text class="tiny">{{showSettle ? '收起' : '看看谁该给谁 ›'}}</text>
+      </view>
+      <block wx:if="{{showSettle && settle}}">
+        <view class="settle-row" wx:for="{{settle.members}}" wx:key="openid">
+          <text class="settle-name">{{item.label}}</text>
+          <text class="settle-meta">付 {{item.paidText}} · 应摊 {{item.owedText}}</text>
+          <text class="settle-balance {{item.owe ? 'is-owe' : 'is-get'}}">{{item.balanceText}}</text>
+        </view>
+        <view class="divider"></view>
+        <view class="muted" wx:if="{{!settle.transfers.length}}">已经平了，不用转账。</view>
+        <view class="settle-transfer" wx:for="{{settle.transfers}}" wx:key="key">{{item.text}}</view>
+      </block>
+    </view>
+
+    <block wx:if="{{groups.length}}">
+      <view class="group" wx:for="{{groups}}" wx:key="date">
+        <view class="between group-head">
+          <text class="group-date">{{item.dateText}}</text>
+          <text class="group-total">{{item.totalText}}</text>
+        </view>
+        <view
+          class="item"
+          wx:for="{{item.items}}"
+          wx:for-item="expense"
+          wx:key="_id"
+          bindtap="onEdit"
+          bindlongpress="onRemove"
+          data-id="{{expense._id}}"
+        >
+          <text class="item-cat">{{expense.category}}</text>
+          <text class="item-note">{{expense.note || '—'}}</text>
+          <text class="item-amount">{{expense.amountText}}</text>
+        </view>
+      </view>
+      <view class="tiny center" style="margin-top: 20rpx;">点一条可以改，长按删除</view>
+    </block>
+
+    <empty-state
+      wx:else
+      title="还没有记录"
+      desc="记账只要三步：填金额、选类别、保存。"
+      action="记一笔"
+      bind:action="onAdd"
+    />
+  </block>
+
+  <view class="card" wx:else>
+    <view class="muted">加载中…</view>
+  </view>
+
+  <view class="footer-bar" wx:if="{{!needLogin}}">
+    <view class="btn-primary" bindtap="onAdd">记一笔</view>
+  </view>
+</view>
