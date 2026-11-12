@@ -12,9 +12,11 @@ Page({
 
   onLoad(query) {
     const tripId = (query && query.id) || ''
-    this.setData({ tripId: tripId })
-    // 从分享卡片进来：不用输码，直接加入
-    if (tripId) this.join({ tripId: tripId })
+    // 分享链接会带 code：服务端用它核对邀请是否过期/是否被重置
+    const code = String((query && query.code) || '').toUpperCase()
+    this.setData({ tripId: tripId, code: code })
+    // 从分享卡片进来：不用手输码，直接加入
+    if (tripId) this.join(code ? { tripId: tripId, code: code } : { tripId: tripId })
   },
 
   onCode(e) {

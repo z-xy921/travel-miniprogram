@@ -1,10 +1,25 @@
+.tabs-wrap {
+  position: relative;
+}
+
 .tabs {
   display: flex;
   /* 横向 scroll-view 不显式给高时，内容会溢出到下面的浮层上 */
   height: 92rpx;
   box-sizing: border-box;
   white-space: nowrap;
-  padding: 4rpx 0 12rpx;
+  padding: 4rpx 24rpx 12rpx;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.track {
+  display: inline-flex;
+  align-items: center;
 }
 
 .tab {
@@ -28,4 +43,43 @@
   color: #ffffff;
   font-weight: 600;
   box-shadow: 0 8rpx 18rpx rgba(37, 99, 235, 0.24);
+}
+
+/* —— 两端渐变遮罩 + 箭头：轻盈的“还有内容”提示 —— */
+.edge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 80rpx;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.edge.is-show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 遮罩从背景色过渡到透明，胶囊滑到边缘是“淡出”，不是被切断 */
+.edge-left {
+  left: 0;
+  background: linear-gradient(to right, #f8fafc 40%, rgba(248, 250, 252, 0) 100%);
+}
+
+.edge-right {
+  right: 0;
+  background: linear-gradient(to left, #f8fafc 40%, rgba(248, 250, 252, 0) 100%);
+}
+
+/* 纯文本箭头：够大、够深，不带任何底托 */
+.arrow {
+  font-size: 36rpx;
+  line-height: 1;
+  color: #475569;
+  font-weight: 600;
 }

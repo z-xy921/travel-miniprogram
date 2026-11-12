@@ -6,6 +6,8 @@ Page({
     tripId: '',
     version: 0,
     editing: false,
+    // 单人 / 结伴：结伴只是先占个标记，真正的成员还是要在详情页邀请
+    mode: 'solo',
     destination: '',
     title: '',
     startDate: todayText(),
@@ -34,6 +36,7 @@ Page({
       const active = trip.transport || []
       this.setData({
         version: Number(trip.version) || 0,
+        mode: trip.mode === 'group' ? 'group' : 'solo',
         destination: trip.destination || '',
         title: trip.title || '',
         startDate: trip.startDate,
@@ -86,8 +89,37 @@ Page({
     this.setData({ transports: transports })
   },
 
-  onGroupTap() {
-    wx.showToast({ title: '创建行程后，在详情页邀请同行', icon: 'none' })
+  onMode(e) {
+    const mode = e.currentTarget.dataset.mode === 'group' ? 'group' : 'solo'
+    this.setData({ mode: mode })
+  },
+
+  // 创建后的分流：结伴先问一句要不要马上邀请，单人直接进详情
+  afterCreate(trip) {
+    const tripId = trip._id
+    const toDetail = function () {
+      wx.redirectTo({ url: '/pages/trip/detail?id=' + tripId })
+    }
+
+    // mode 以服务端落库结果为准，不看本地选中态
+    if (trip.mode !== 'group') {
+      toDetail()
+      return
+    }
+
+    wx.showModal({
+      title: '行程创建成功',
+      content: '是否立即邀请同伴一起规划？',
+      confirmText: '去邀请',
+      cancelText: '稍后',
+      success(res) {
+        if (res.confirm) {
+          wx.redirectTo({ url: '/pages/trips/invite?id=' + tripId })
+          return
+        }
+        toDetail()
+      }
+    })
   },
 
   async onSubmit() {
@@ -120,8 +152,8 @@ Page({
         wx.navigateBack()
         return
       }
-      const res = await tripService.create(Object.assign({ mode: 'solo' }, draft))
-      wx.redirectTo({ url: '/pages/trip/detail?id=' + res.trip._id })
+      const res = await tripService.create(Object.assign({ mode: this.data.mode }, draft))
+      this.afterCreate(res.trip)
     } catch (err) {
       this.setData({ submitting: false })
       // 冲突时不覆盖对方：只重取版本号，用户再点一次保存即可

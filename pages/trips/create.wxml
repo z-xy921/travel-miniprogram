@@ -1,51 +1,97 @@
-<view class="page">
-  <view class="card">
-    <view class="field">
-      <view class="field-label">目的地</view>
-      <view class="field-box">
+<view class="create-page">
+  <!-- 卡片一：出行模式 -->
+  <view class="c-card" wx:if="{{!editing}}">
+    <view class="c-head">
+      <view class="c-title">和谁一起？</view>
+      <view class="c-sub">先定个基调，建好后随时可以邀请同伴</view>
+    </view>
+
+    <view class="modes">
+      <view
+        class="mode {{mode === 'solo' ? 'is-active' : ''}}"
+        data-mode="solo"
+        bindtap="onMode"
+      >
+        <view class="mode-emoji">🧍</view>
+        <view class="mode-title">单人出行</view>
+        <view class="mode-desc">自己排、自己改</view>
+        <view class="mode-check" wx:if="{{mode === 'solo'}}">✓</view>
+      </view>
+
+      <view
+        class="mode {{mode === 'group' ? 'is-active' : ''}}"
+        data-mode="group"
+        bindtap="onMode"
+      >
+        <view class="mode-emoji">👥</view>
+        <view class="mode-title">结伴出行</view>
+        <view class="mode-desc">建好后分享邀请</view>
+        <view class="mode-check" wx:if="{{mode === 'group'}}">✓</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 卡片二：去哪 -->
+  <view class="c-card">
+    <view class="c-head">
+      <view class="c-title">去哪玩？</view>
+      <view class="c-sub">城市写清楚，地图选点会落在对的区域</view>
+    </view>
+
+    <view class="c-field">
+      <view class="c-label">目的地</view>
+      <view class="c-input-wrap">
         <input
-          class="field-input"
+          class="c-input"
           value="{{destination}}"
           data-field="destination"
           bindinput="onInput"
           placeholder="例如 杭州"
-          placeholder-class="ph"
+          placeholder-class="c-ph"
           maxlength="20"
         />
       </view>
     </view>
 
-    <view class="field">
-      <view class="field-label">行程名称（选填，默认用目的地）</view>
-      <view class="field-box">
+    <view class="c-field is-last">
+      <view class="c-label">行程名称<text class="c-optional">选填</text></view>
+      <view class="c-input-wrap">
         <input
-          class="field-input"
+          class="c-input"
           value="{{title}}"
           data-field="title"
           bindinput="onInput"
-          placeholder="例如 周末西湖两日"
-          placeholder-class="ph"
+          placeholder="{{destination ? destination + ' 之旅' : '例如 周末西湖两日'}}"
+          placeholder-class="c-ph"
           maxlength="20"
         />
       </view>
     </view>
+  </view>
 
-    <view class="field">
-      <view class="field-label">出发 / 返回日期</view>
+  <!-- 卡片三：日期与预算 -->
+  <view class="c-card">
+    <view class="c-head">
+      <view class="c-title">什么时候、花多少</view>
+      <view class="c-sub">天数由日期推导，最多 15 天</view>
+    </view>
+
+    <view class="c-field">
+      <view class="c-label">出发 / 返回</view>
       <view class="dates">
-        <picker mode="date" value="{{startDate}}" bindchange="onStartDate">
+        <picker class="date-picker" mode="date" value="{{startDate}}" bindchange="onStartDate">
           <view class="date-box">{{startDate}}</view>
         </picker>
-        <text class="date-sep">至</text>
-        <picker mode="date" value="{{endDate}}" start="{{startDate}}" bindchange="onEndDate">
+        <text class="date-sep">→</text>
+        <picker class="date-picker" mode="date" value="{{endDate}}" start="{{startDate}}" bindchange="onEndDate">
           <view class="date-box">{{endDate}}</view>
         </picker>
       </view>
-      <view class="field-tip">共 {{daysText}}，最多 15 天</view>
+      <view class="c-tip">共 {{daysText}}</view>
     </view>
 
-    <view class="field">
-      <view class="field-label">怎么去（可多选）</view>
+    <view class="c-field">
+      <view class="c-label">怎么去<text class="c-optional">可多选</text></view>
       <view class="chips">
         <view
           class="chip {{item.active ? 'is-active' : ''}}"
@@ -57,44 +103,31 @@
       </view>
     </view>
 
-    <view class="field">
-      <view class="field-label">预算（元，选填）</view>
-      <view class="field-box">
+    <view class="c-field is-last">
+      <view class="c-label">预算<text class="c-optional">选填</text></view>
+      <view class="c-input-wrap">
+        <text class="c-unit">¥</text>
         <input
-          class="field-input"
+          class="c-input"
           type="digit"
           value="{{budget}}"
           data-field="budget"
           bindinput="onInput"
           placeholder="例如 1200"
-          placeholder-class="ph"
+          placeholder-class="c-ph"
         />
       </view>
     </view>
   </view>
 
-  <view class="card" wx:if="{{!editing}}">
-    <view class="section-title">出行模式</view>
-    <view class="modes">
-      <view class="mode is-active">
-        <view class="mode-title">单人出行</view>
-        <view class="mode-desc">自己排、自己改</view>
-      </view>
-      <view class="mode is-disabled" bindtap="onGroupTap">
-        <view class="mode-title">多人出行</view>
-        <view class="mode-desc">建好后再邀请同行</view>
-      </view>
-    </view>
+  <view class="edit-tip" wx:if="{{editing}}">
+    保存后，同行的伙伴下次打开就能看到新的安排。
   </view>
 
-  <view class="card" wx:else>
-    <view class="section-title">保存修改</view>
-    <view class="muted">保存后，同行的伙伴下次打开就能看到新的安排。</view>
-  </view>
-
-  <view class="footer-bar">
-    <view class="btn-primary {{submitting ? 'is-disabled' : ''}}" bindtap="onSubmit">
-      {{submitting ? (editing ? '保存中…' : '创建中…') : (editing ? '保存修改' : '创建行程')}}
+  <!-- 底部固定主按钮 -->
+  <view class="foot">
+    <view class="main-btn {{submitting ? 'is-disabled' : ''}}" bindtap="onSubmit">
+      {{submitting ? (editing ? '保存中…' : '创建中…') : (editing ? '保存修改' : '开始规划')}}
     </view>
   </view>
 </view>

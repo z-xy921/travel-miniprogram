@@ -44,6 +44,26 @@
       {
         "type": "folder",
         "value": ".qa-tmp"
+      },
+      {
+        "type": "folder",
+        "value": "node_modules"
+      },
+      {
+        "type": "folder",
+        "value": "tests"
+      },
+      {
+        "type": "file",
+        "value": "package.json"
+      },
+      {
+        "type": "file",
+        "value": "package-lock.json"
+      },
+      {
+        "type": "file",
+        "value": "jest.config.js"
       }
     ],
     "include": []

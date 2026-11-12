@@ -31,6 +31,8 @@ Page({
     avatarUrl: '',
     nickname: '',
     submitting: false,
+    // 一键登录的云端校验进行中
+    checking: false,
     redirect: ''
   },
 
@@ -50,13 +52,51 @@ Page({
     this.setData({ agreed: (e.detail.value || []).length > 0 })
   },
 
-  // 协议拦截：没勾选只提示，不弹资料确认弹层
-  onTapLogin() {
+  // 一键登录：先问云端这个 openid 有没有完整资料。
+  // 老用户（之前登录过、云端 users 里有昵称+头像）直接放行进首页；
+  // 首次登录才弹「完善个人信息」弹层，弹层里顺带预填云端已有的昵称。
+  async onTapLogin() {
     if (!this.data.agreed) {
       wx.showToast({ title: '请先阅读并同意协议', icon: 'none' })
       return
     }
-    this.setData({ showProfileModal: true })
+    if (this.data.checking || this.data.submitting) return
+
+    this.setData({ checking: true })
+    wx.showLoading({ title: '登录中...', mask: true })
+
+    try {
+      const res = await userService.login()
+      wx.hideLoading()
+
+      if (res.hasProfile) {
+        app.setUser({
+          hasLogin: true,
+          openid: res.openid,
+          nickname: res.nickname,
+          avatar: res.avatar
+        })
+        wx.removeStorageSync('loginSkipped')
+        wx.showToast({ title: '欢迎回来', icon: 'success' })
+
+        const redirect = this.data.redirect
+        setTimeout(function () {
+          if (redirect) wx.navigateBack({ fail: goHome })
+          else goHome()
+        }, 600)
+        return
+      }
+
+      this.setData({
+        checking: false,
+        nickname: res.nickname || '',
+        showProfileModal: true
+      })
+    } catch (err) {
+      wx.hideLoading()
+      this.setData({ checking: false })
+      wx.showToast({ title: err.message || '登录失败，请重试', icon: 'none' })
+    }
   },
 
   // 跳过登录：允许浏览，但创建/加入行程、记账等写操作仍会被 checkLogin 拦截

@@ -1,10 +1,32 @@
-<scroll-view class="tabs" scroll-x enable-flex show-scrollbar="{{false}}">
-  <view
-    class="tab {{item.index === active ? 'is-active' : ''}}"
-    wx:for="{{tabs}}"
-    wx:for-index="i"
-    wx:key="index"
-    data-index="{{item.index}}"
-    bindtap="onTap"
-  >{{item.label}}</view>
-</scroll-view>
+<view class="tabs-wrap">
+  <scroll-view
+    class="tabs"
+    scroll-x
+    enhanced
+    show-scrollbar="{{false}}"
+    scroll-with-animation
+    scroll-into-view="{{scrollInto}}"
+    scroll-left="{{scrollLeft}}"
+    bindscroll="onScroll"
+  >
+    <view class="track">
+      <view
+        class="tab {{item.index === active ? 'is-active' : ''}}"
+        wx:for="{{tabs}}"
+        wx:for-index="i"
+        wx:key="index"
+        id="tab-{{item.index}}"
+        data-index="{{item.index}}"
+        bindtap="onTap"
+      >{{item.label}}</view>
+    </view>
+  </scroll-view>
+
+  <!-- 两端渐变遮罩：滑到一半的内容自然淡出，箭头提示还有更多 -->
+  <view class="edge edge-left {{showLeft ? 'is-show' : ''}}" data-dir="left" bindtap="onArrow">
+    <text class="arrow">‹</text>
+  </view>
+  <view class="edge edge-right {{showRight ? 'is-show' : ''}}" data-dir="right" bindtap="onArrow">
+    <text class="arrow">›</text>
+  </view>
+</view>

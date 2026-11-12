@@ -1,33 +1,425 @@
-.chips {
+page {
+  background-color: #f8fafc;
+}
+
+.edit-page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 24rpx 32rpx calc(200rpx + env(safe-area-inset-bottom));
+  background-color: #f8fafc;
+}
+
+/* —— 统一白卡片 —— */
+.c-card {
+  margin-bottom: 24rpx;
+  padding: 32rpx;
+  border-radius: 24rpx;
+  background-color: #ffffff;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+}
+
+.c-title {
+  margin-bottom: 20rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #1f2328;
+}
+
+.c-title.is-sub {
+  margin-top: 12rpx;
+}
+
+.c-title.is-inline {
+  margin-bottom: 0;
+}
+
+.c-optional {
+  margin-left: 10rpx;
+  font-size: 22rpx;
+  font-weight: 400;
+  color: #b7c0cd;
+}
+
+.c-field {
+  margin-top: 24rpx;
+}
+
+.c-label {
+  margin-bottom: 12rpx;
+  font-size: 24rpx;
+  color: #64748b;
+}
+
+.c-tip {
+  margin-top: 14rpx;
+  font-size: 22rpx;
+  color: #94a3b8;
+  line-height: 1.6;
+}
+
+/* —— 城市提示 / 选点 —— */
+.city-hint {
+  margin-bottom: 20rpx;
+  font-size: 22rpx;
+  color: #94a3b8;
+}
+
+.hint-action {
+  margin-left: 10rpx;
+  color: #2563eb;
+}
+
+.pick-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 96rpx;
+  border-radius: 16rpx;
+  background-color: #eff6ff;
+  color: #2563eb;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.pick-btn:active {
+  opacity: 0.8;
+}
+
+/* —— 已选位置 —— */
+.loc-card {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  border-radius: 16rpx;
+  background-color: #f8fafc;
+}
+
+.loc-main {
+  flex: 1;
+  min-width: 0;
+  padding-right: 16rpx;
+}
+
+.loc-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1f2328;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.loc-addr {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: #94a3b8;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.loc-actions {
+  display: flex;
+  align-items: center;
+}
+
+.loc-edit {
+  padding: 0 20rpx;
+  height: 56rpx;
+  line-height: 56rpx;
+  border-radius: 28rpx;
+  background-color: #ffffff;
+  border: 2rpx solid #dbeafe;
+  color: #2563eb;
+  font-size: 22rpx;
+}
+
+.loc-del {
+  margin-left: 12rpx;
+  width: 56rpx;
+  height: 56rpx;
+  line-height: 56rpx;
+  text-align: center;
+  border-radius: 28rpx;
+  background-color: #fef2f2;
+  font-size: 24rpx;
+}
+
+/* —— 输入框：白底 + 浅灰描边 —— */
+.ipt {
+  width: 100%;
+  height: 88rpx;
+  padding: 0 24rpx;
+  border-radius: 14rpx;
+  border: 2rpx solid #e2e8f0;
+  background-color: #ffffff;
+  font-size: 28rpx;
+  color: #1f2328;
+  box-sizing: border-box;
+}
+
+/* —— 分类 / 时长 网格 —— */
+.grid {
   display: flex;
   flex-wrap: wrap;
 }
 
-.locate {
-  flex: 0 0 auto;
-  margin-left: 12rpx;
-  padding: 0 24rpx;
-  height: 60rpx;
-  line-height: 60rpx;
-  border-radius: 30rpx;
-  background-color: #e8f0fe;
-  color: #2563eb;
+.g-item {
+  flex: 0 0 calc((100% - 32rpx) / 3);
+  height: 76rpx;
+  margin: 0 16rpx 16rpx 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14rpx;
+  background-color: #f8fafc;
+  border: 2rpx solid transparent;
   font-size: 26rpx;
+  color: #475569;
+  box-sizing: border-box;
+}
+
+.g-item:nth-child(3n) {
+  margin-right: 0;
+}
+
+.g-item.is-active {
+  background-color: #eff6ff;
+  border-color: #2563eb;
+  color: #2563eb;
+  font-weight: 600;
+}
+
+/* —— 预计到达 —— */
+.form-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8rpx;
+  padding: 20rpx 0;
+  border-top: 2rpx solid #f1f5f9;
+}
+
+.row-label {
+  font-size: 26rpx;
+  color: #64748b;
+}
+
+.time-val {
+  padding: 0 24rpx;
+  height: 64rpx;
+  line-height: 64rpx;
+  border-radius: 32rpx;
+  background-color: #f8fafc;
+  font-size: 26rpx;
+  color: #1f2328;
+}
+
+.time-val.is-empty {
+  color: #94a3b8;
+}
+
+/* —— 已知信息 —— */
+.facts-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8rpx;
+}
+
+.state-tag {
+  padding: 4rpx 14rpx;
+  border-radius: 8rpx;
+  font-size: 20rpx;
+  line-height: 32rpx;
+}
+
+.state-tag.is-pending {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+.state-tag.is-done {
+  background-color: #eff6ff;
+  color: #2563eb;
+}
+
+.fact-row {
+  display: flex;
+  align-items: center;
+  min-height: 88rpx;
+  border-bottom: 2rpx solid #f1f5f9;
+}
+
+.fact-row.is-last {
+  border-bottom: none;
+}
+
+.fact-label {
+  flex: 0 0 150rpx;
+  font-size: 26rpx;
+  color: #64748b;
+}
+
+.fact-input {
+  flex: 1;
+  height: 88rpx;
+  font-size: 26rpx;
+  text-align: right;
+  color: #1f2328;
+}
+
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 24rpx;
+  padding-top: 24rpx;
+  border-top: 2rpx solid #f1f5f9;
+}
+
+.switch-copy {
+  flex: 1;
+  padding-right: 20rpx;
+}
+
+.switch-label {
+  font-size: 26rpx;
+  color: #1f2328;
+}
+
+.switch-desc {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: #94a3b8;
+}
+
+/* —— 备注 —— */
+.note-box {
+  width: 100%;
+  min-height: 180rpx;
+  padding: 24rpx;
+  border-radius: 14rpx;
+  background-color: #f8fafc;
+  font-size: 26rpx;
+  line-height: 1.6;
+  color: #1f2328;
+  box-sizing: border-box;
+}
+
+/* —— 删除地点（弱化） —— */
+.danger-zone {
+  padding: 16rpx 0 8rpx;
+  text-align: center;
+}
+
+.danger-link {
+  display: inline-block;
+  padding: 12rpx 32rpx;
+  font-size: 26rpx;
+  color: #b8c1cc;
+}
+
+.danger-link:active {
+  color: #dc2626;
+}
+
+/* —— 底部保存 —— */
+.save-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  padding: 16rpx 32rpx calc(20rpx + env(safe-area-inset-bottom));
+  background-color: #ffffff;
+  box-shadow: 0 -6rpx 24rpx rgba(15, 23, 42, 0.06);
+}
+
+.save-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 96rpx;
+  border-radius: 20rpx;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #ffffff;
+  font-size: 32rpx;
+  font-weight: 600;
+  box-shadow: 0 12rpx 28rpx rgba(37, 99, 235, 0.28);
+}
+
+.save-btn:active {
+  opacity: 0.92;
+}
+
+.save-btn.is-disabled {
+  background: #c3ccda;
+  box-shadow: none;
+}
+
+/* —— 城市选择弹层 —— */
+.sheet-mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 55;
+  background-color: rgba(15, 23, 42, 0.35);
+}
+
+.sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60;
+  padding: 32rpx 32rpx calc(32rpx + env(safe-area-inset-bottom));
+  border-radius: 28rpx 28rpx 0 0;
+  background-color: #ffffff;
+}
+
+.sheet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+
+.sheet-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1f2328;
+}
+
+.sheet-close {
+  font-size: 26rpx;
+  color: #94a3b8;
+}
+
+.sheet-input {
+  width: 100%;
+  height: 88rpx;
+  padding: 0 24rpx;
+  border-radius: 14rpx;
+  border: 2rpx solid #e2e8f0;
+  background-color: #ffffff;
+  font-size: 28rpx;
+  box-sizing: border-box;
 }
 
 .city-list {
-  margin-top: 8rpx;
-  border-radius: 14rpx;
-  background-color: #f7fafd;
-  overflow: hidden;
+  max-height: 480rpx;
+  margin-top: 16rpx;
 }
 
 .city-item {
   display: flex;
   align-items: center;
-  height: 84rpx;
-  padding: 0 24rpx;
-  border-bottom: 2rpx solid #edf1f7;
+  height: 88rpx;
+  padding: 0 8rpx;
+  border-bottom: 2rpx solid #f1f5f9;
 }
 
 .city-item:last-child {
@@ -36,7 +428,7 @@
 
 .city-name {
   font-size: 28rpx;
-  color: #1f2937;
+  color: #1f2328;
 }
 
 .city-sub {
@@ -45,51 +437,8 @@
   color: #94a3b8;
 }
 
-.time-box {
-  height: 76rpx;
-  line-height: 76rpx;
-  padding: 0 28rpx;
-  border-radius: 38rpx;
-  background-color: #eef2f8;
-  font-size: 28rpx;
-  color: #1f2937;
-}
-
-.fact-input {
-  display: flex;
-  align-items: center;
-  min-height: 84rpx;
-  border-bottom: 2rpx solid #edf1f7;
-}
-
-.fact-name {
-  flex: 0 0 130rpx;
-  font-size: 26rpx;
-  color: #64748b;
-}
-
-.fact-field {
-  flex: 1;
-  height: 84rpx;
-  font-size: 28rpx;
-}
-
-.switch-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 20rpx;
-}
-
-.switch-label {
-  font-size: 26rpx;
-  color: #475569;
-}
-
-.del {
-  margin: 8rpx 0 40rpx;
-  text-align: center;
-  font-size: 28rpx;
-  color: #dc2626;
-  padding: 24rpx 0;
+.sheet-tip {
+  margin-top: 24rpx;
+  font-size: 24rpx;
+  color: #94a3b8;
 }

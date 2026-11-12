@@ -135,7 +135,7 @@ async function update(payload, ctx) {
   return { trip: fresh.data[0] }
 }
 
-// 软删除：行程和它下面的点位、账目一起标记，历史留给 V1.5 的手帐回放
+// 软删除：行程和它下面的点位、账目、手帐一起标记，历史留给 V1.5 的手帐回放
 // 只有创建者能删，且需要版本一致（别人刚改过时先刷新）
 async function remove(payload, ctx) {
   const trip = await getTripForMember(payload.tripId, ctx.openid)
@@ -147,6 +147,8 @@ async function remove(payload, ctx) {
   await db.collection('trips').where({ _id: trip._id }).update({ data: { deletedAt: now, updatedAt: now } })
   await db.collection('pois').where({ tripId: trip._id, deletedAt: '' }).update({ data: { deletedAt: now } })
   await db.collection('expenses').where({ tripId: trip._id, deletedAt: '' }).update({ data: { deletedAt: now } })
+  // 手帐记录同样软删：否则文件记录会悬空，且被删行程的照片仍占着 100 张配额
+  await db.collection('files').where({ tripId: trip._id, deletedAt: '' }).update({ data: { deletedAt: now } })
   return { tripId: trip._id }
 }
 
@@ -182,11 +184,19 @@ async function join(payload, ctx) {
   const res = await db.collection('trips').where(query).limit(1).get()
   const trip = res.data[0]
   if (!trip) throw new Error('行程不存在、已被删除，或邀请码不对')
-  if (code && Number(trip.inviteExpireAt || 0) < Date.now()) {
-    throw new Error('邀请码已过期，让创建者重新生成一个')
-  }
 
+  // 已在行程里的成员直接放行：自己的行程不该因为邀请码过期而打不开
   if (isMember(trip, ctx.openid)) return { trip: trip, joined: false }
+
+  // 邀请窗口对「链接直达」和「手输码」一视同仁：没有有效期或已过期都不能加入
+  const expireAt = Number(trip.inviteExpireAt || 0)
+  if (!expireAt) throw new Error('这个邀请还没开通，请让创建者重新分享一次')
+  if (expireAt < Date.now()) throw new Error('邀请已过期，请让创建者重新分享一次')
+
+  // 链接里带了码就核对一遍，避免码被重置后旧链接继续有效
+  if (code && trip.inviteCode && code !== trip.inviteCode) {
+    throw new Error('邀请码已失效，请让创建者重新分享')
+  }
 
   const now = Date.now()
   await db

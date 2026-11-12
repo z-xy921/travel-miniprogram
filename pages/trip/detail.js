@@ -3,7 +3,7 @@ const tripService = require('../../services/trip')
 const notifyService = require('../../services/notify')
 const conflict = require('../../utils/conflict')
 const { requestReminder } = require('../../utils/subscribe')
-const { dateRangeText, durationText, timeToMin, minToTime, addDays, parseDate, moneyText } = require('../../utils/format')
+const { durationText, timeToMin, minToTime, addDays, parseDate, moneyText } = require('../../utils/format')
 const { DEFAULT_START, BUFFER_MIN, MESSAGE_TEMPLATES } = require('../../utils/constants')
 
 const app = getApp()
@@ -20,6 +20,12 @@ function dayLabel(day) {
   const date = parseDate(day.date)
   const short = date ? date.getMonth() + 1 + '/' + date.getDate() : ''
   return 'D' + (day.index + 1) + ' ' + short
+}
+
+// 11月11日：头部只放最必要的时间信息
+function cnDay(value) {
+  const date = parseDate(value)
+  return date ? date.getMonth() + 1 + '月' + date.getDate() + '日' : ''
 }
 
 // 展示字段只在页面算一次，WXML 里不做运算
@@ -50,7 +56,16 @@ Page({
     memberCount: 1,
     isOwner: false,
     // 只读预览：游客或非成员打开分享的行程，能看到地点和时间轴，但不能改
-    readonly: false
+    readonly: false,
+    // owner 打开页面时静默续上的邀请码，分享链接会带上它
+    inviteCode: '',
+    // 头部只保留标题 + 一行元信息 + 小标签，其余操作收进右上角菜单
+    headMeta: '',
+    budgetText: '',
+    statusText: '规划中',
+    statusAction: '标记为已结束',
+    statusClass: 'is-blue',
+    showMore: false
   },
 
   onLoad(query) {
@@ -73,8 +88,25 @@ Page({
       this.setData({ readonly: !!res.preview })
       this.apply(res.trip, res.items || [])
       this.setData({ loading: false, error: '' })
+      if (!res.preview) this.ensureInvite(res.trip)
     } catch (err) {
       this.setData({ loading: false, error: err.message || '加载失败' })
+    }
+  },
+
+  // 加入接口对链接直达也校验有效期，所以 owner 打开详情时先静默续一个邀请码
+  // （服务端幂等：有效期内复用同一个码），分享出去才能直接加入
+  async ensureInvite(trip) {
+    if (!trip || trip.myRole !== 'owner') return
+    if (trip.inviteCode && Number(trip.inviteExpireAt || 0) > Date.now()) {
+      this.setData({ inviteCode: trip.inviteCode })
+      return
+    }
+    try {
+      const res = await tripService.inviteSilent(trip._id)
+      this.setData({ inviteCode: res.inviteCode })
+    } catch (err) {
+      // 生成失败不阻塞浏览，分享时退回不带码的链接
     }
   },
 
@@ -97,15 +129,44 @@ Page({
     this.load()
   },
 
+  onOpenMore() {
+    if (this.data.readonly) return
+    this.setData({ showMore: true })
+  },
+
+  onCloseMore() {
+    this.setData({ showMore: false })
+  },
+
+  // 右上角折叠菜单：低频操作集中在这里，头部只留标题和信息
+  onMenu(e) {
+    const act = e.currentTarget.dataset.act
+    this.setData({ showMore: false })
+    const map = {
+      editTrip: this.onEditTrip,
+      addDay: this.onAddDay,
+      removeDay: this.onRemoveDay,
+      invite: this.onOpenInvite,
+      remind: this.onRemind,
+      copy: this.onCopyTrip,
+      status: this.onToggleStatus
+    }
+    if (map[act]) map[act]()
+  },
+
   // 创建者转发 = 邀请（点开直接加入）；成员转发仍是占位，不扩人
   onShareAppMessage() {
     const trip = this.data.trip
     if (!trip) {
       return { title: '用「旅行计划」把每天的路排清楚', path: '/pages/trips/list' }
     }
+    // 链接带上邀请码：对方点开时按码校验有效期，码被重置后旧链接自然失效
+    const code = this.data.inviteCode
     return {
       title: this.data.isOwner ? '一起排「' + trip.title + '」的行程' : '我在排「' + trip.title + '」的行程',
-      path: this.data.isOwner ? '/pages/trips/join?id=' + trip._id : '/pages/trips/list'
+      path: this.data.isOwner
+        ? '/pages/trips/join?id=' + trip._id + (code ? '&code=' + code : '')
+        : '/pages/trips/list'
     }
   },
 
@@ -124,19 +185,27 @@ Page({
       return poi.dayIndex === lastIndex
     })
 
+    const memberCount = Math.max(1, (trip.members || []).length)
+    const startText = cnDay(trip.startDate)
+    const endText = cnDay(trip.endDate)
+    const range = startText === endText || !endText ? startText : startText + ' - ' + endText
+    const headMeta = [range, '共 ' + tabs.length + ' 天', memberCount + ' 人']
+      .filter(Boolean)
+      .join(' · ')
+
     this.setData({
-      trip: Object.assign({}, trip, {
-        dateText: dateRangeText(trip.startDate, trip.endDate)
-      }),
+      trip: trip,
       tabs: tabs,
       activeDay: activeDay,
       canRemoveLastDay: canRemoveLastDay,
-      memberCount: Math.max(1, (trip.members || []).length),
+      memberCount: memberCount,
+      headMeta: headMeta,
       isOwner: (trip.myRole || (this.data.trip && this.data.trip.myRole)) === 'owner',
       // 预算只存不用是不诚实的，详情页至少要把数字摆出来
       budgetText: Number(trip.budgetCents) ? moneyText(trip.budgetCents) : '',
       statusText: STATUS_TEXT[trip.status] || '规划中',
       statusAction: trip.status === 'ended' ? '重新打开这趟' : '标记为已结束',
+      statusClass: trip.status === 'ended' ? 'is-gray' : trip.status === 'ongoing' ? 'is-green' : 'is-blue',
       pois: items,
       dayPois: items.filter(function (poi) {
         return poi.dayIndex === activeDay
@@ -394,8 +463,12 @@ Page({
   // 误点了「加一天」可以退回来：最后一天没有地点时才能减
   async onRemoveDay() {
     const trip = this.data.trip
-    if (!trip || !this.data.canRemoveLastDay) return
+    if (!trip) return
     if (!this.guardWrite()) return
+    if (!this.data.canRemoveLastDay) {
+      wx.showToast({ title: '最后一天还有地点，先挪走再减', icon: 'none' })
+      return
+    }
     try {
       const res = await tripService.update(trip._id, {
         endDate: addDays(trip.endDate, -1)

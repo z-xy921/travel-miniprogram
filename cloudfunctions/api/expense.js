@@ -1,6 +1,8 @@
 const { db, _, $ } = require('./db')
-const { getTripForMember } = require('./guard')
+const { getTripForMember, conflictError } = require('./guard')
 const { cut, formatDate, toCents, uuid } = require('./util')
+// 均摊与结算的纯算法抽在 settle-core.js，tests/unit/settle.test.js 测的就是它
+const { evenSplits, buildSettlement } = require('./settle-core')
 
 const CATEGORIES = ['交通', '餐饮', '门票', '住宿', '购物', '其它']
 const MAX_ITEMS = 300
@@ -49,18 +51,6 @@ function memberMap(trip, selfOpenid) {
     map[item.openid] = memberLabel(item, selfOpenid)
   })
   return map
-}
-
-// 均摊：分到「分」，除不尽的零头给第一个人，保证合计刚好等于金额
-function evenSplits(openids, amountCents) {
-  const list = openids.slice()
-  const count = list.length
-  if (!count) return []
-  const base = Math.floor(amountCents / count)
-  const rest = amountCents - base * count
-  return list.map(function (openid, index) {
-    return { openid: openid, amountCents: base + (index === 0 ? rest : 0) }
-  })
 }
 
 // splits 由客户端传 [{openid, amount(元)}]；不传就按全部成员均摊
@@ -171,12 +161,33 @@ async function save(payload, ctx) {
       .limit(1)
       .get()
     if (!existed.data.length) throw new Error('这笔记录不存在或已被删除')
-    await db.collection('expenses').where({ _id: expenseId }).update({ data: doc })
+
+    const old = existed.data[0]
+    // 老账目没有 version 字段：补 0，否则 where({ version: 0 }) 匹配不到
+    if (typeof old.version !== 'number') {
+      await db.collection('expenses').where({ _id: expenseId }).update({ data: { version: 0 } })
+      old.version = 0
+    }
+
+    // 客户端带上打开这笔时读到的版本号；对不上说明中间有人改过，拒绝静默覆盖
+    const expected = Number(input.version)
+    if (!isFinite(expected)) throw new Error('缺少版本号，请刷新列表后重试')
+    if (expected !== old.version) throw conflictError()
+
+    // 金额、付款人、分摊写在同一个文档里，再用版本号做一次 CAS：
+    // 并发改同一笔只有一个能落地，另一个拿到 conflict，不会出现「金额变了、分摊没变」
+    const updated = await db
+      .collection('expenses')
+      .where({ _id: expenseId, version: old.version })
+      .update({
+        data: Object.assign({}, doc, { version: _.inc(1) })
+      })
+    if (!updated.stats.updated) throw conflictError()
   } else {
     expenseId = uuid()
     await db.collection('expenses').add({
       data: Object.assign(
-        { _id: expenseId, createdBy: ctx.openid, createdAt: now, deletedAt: '' },
+        { _id: expenseId, version: 0, createdBy: ctx.openid, createdAt: now, deletedAt: '' },
         doc
       )
     })
@@ -215,111 +226,6 @@ async function settle(payload, ctx) {
     order: (trip.memberOpenids || []).slice(),
     ctx: ctx
   })
-}
-
-// 单独抽出来，默认老账目（只有 splitWith）也能算出结果
-function buildSettlement(input) {
-  const trip = input.trip
-  const labels = input.labels
-  const selfOpenid = input.ctx.openid
-  const order = input.order
-  const items = input.items || []
-
-  const paid = {}
-  const owed = {}
-
-  function ensure(openid) {
-    if (order.indexOf(openid) === -1) order.push(openid)
-    if (paid[openid] === undefined) paid[openid] = 0
-    if (owed[openid] === undefined) owed[openid] = 0
-  }
-
-  order.forEach(ensure)
-
-  items.forEach(function (item) {
-    const amount = Number(item.amountCents) || 0
-    const payer = item.paidBy || item.createdBy || selfOpenid
-    ensure(payer)
-    paid[payer] += amount
-
-    const splits = Array.isArray(item.splits) && item.splits.length ? item.splits : null
-    if (splits) {
-      splits.forEach(function (row) {
-        const openid = row.openid
-        if (!openid) return
-        ensure(openid)
-        owed[openid] += Number(row.amountCents) || 0
-      })
-      return
-    }
-
-    // 老数据：只有 splitWith，按人数均摊
-    let list = (item.splitOpenids || item.splitWith || []).filter(Boolean)
-    if (!list.length) list = [payer]
-    list.forEach(ensure)
-    const base = Math.floor(amount / list.length)
-    const rest = amount - base * list.length
-    list.forEach(function (openid, index) {
-      owed[openid] += base + (index === 0 ? rest : 0)
-    })
-  })
-
-  const rows = order.map(function (openid) {
-    const balance = paid[openid] - owed[openid]
-    return {
-      openid: openid,
-      self: openid === selfOpenid,
-      label: labels[openid] || '已移除 (' + String(openid).slice(-4).toUpperCase() + ')',
-      paidCents: paid[openid],
-      owedCents: owed[openid],
-      balanceCents: balance
-    }
-  })
-
-  const debtors = rows
-    .filter(function (row) {
-      return row.balanceCents < 0
-    })
-    .map(function (row) {
-      return { label: row.label, left: row.balanceCents }
-    })
-  const creditors = rows
-    .filter(function (row) {
-      return row.balanceCents > 0
-    })
-    .map(function (row) {
-      return { label: row.label, left: row.balanceCents }
-    })
-
-  const transfers = []
-  let i = 0
-  let j = 0
-  while (i < debtors.length && j < creditors.length) {
-    const amount = Math.min(-debtors[i].left, creditors[j].left)
-    if (amount > 0) {
-      transfers.push({
-        fromLabel: debtors[i].label,
-        toLabel: creditors[j].label,
-        amountCents: amount
-      })
-    }
-    debtors[i].left += amount
-    creditors[j].left -= amount
-    if (debtors[i].left === 0) i++
-    if (creditors[j].left === 0) j++
-  }
-
-  const totalCents = rows.reduce(function (sum, row) {
-    return sum + row.paidCents
-  }, 0)
-
-  return {
-    tripId: trip._id,
-    memberCount: trip.memberOpenids ? trip.memberOpenids.length : 1,
-    totalCents: totalCents,
-    members: rows,
-    transfers: transfers
-  }
 }
 
 module.exports = {

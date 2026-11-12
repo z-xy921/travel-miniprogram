@@ -1,8 +1,4 @@
 {
   "navigationBarTitleText": "旅行手帐",
-  "enablePullDownRefresh": true,
-  "usingComponents": {
-    "day-tabs": "../../components/day-tabs/day-tabs",
-    "empty-state": "../../components/empty-state/empty-state"
-  }
+  "enablePullDownRefresh": true
 }

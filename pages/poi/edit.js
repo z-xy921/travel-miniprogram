@@ -54,6 +54,9 @@ Page({
     // 选点地图的初始中心，避免异地规划时地图落在你当前所在城市
     center: null,
     cityText: '',
+    // 顶部那行极小的「定位参考」文案，城市选择收进弹层，不再占一个表单项
+    cityHint: '我的当前位置',
+    showCity: false,
     cityQuery: '',
     cityOptions: [],
     pickedName: '',
@@ -98,7 +101,11 @@ Page({
       }
 
       if (!this.data.poiId) {
-        this.setData({ center: center, cityText: cityText })
+        this.setData({
+          center: center,
+          cityText: cityText,
+          cityHint: cityText || (dayCenter ? '行程已有地点附近' : '我的当前位置')
+        })
         return
       }
 
@@ -164,6 +171,14 @@ Page({
     this.setData({ 'form.factsPending': e.detail.value })
   },
 
+  onOpenCity() {
+    this.setData({ showCity: true })
+  },
+
+  onCloseCity() {
+    this.setData({ showCity: false, cityQuery: '', cityOptions: [] })
+  },
+
   onCityInput(e) {
     const value = e.detail.value
     this.setData({ cityQuery: value, cityOptions: searchCities(value) })
@@ -176,6 +191,8 @@ Page({
     this.setData({
       center: { latitude: city.latitude, longitude: city.longitude },
       cityText: city.name,
+      cityHint: city.name,
+      showCity: false,
       cityQuery: '',
       cityOptions: []
     })
@@ -321,7 +338,14 @@ Page({
   },
 
   onClearLocation() {
-    this.setData({ 'form.location': null, located: false, coordText: '' })
+    // 清掉坐标后，选点会重新从「我的当前位置」开始
+    this.setData({
+      'form.location': null,
+      located: false,
+      coordText: '',
+      cityText: '',
+      cityHint: '我的当前位置'
+    })
   },
 
   async onSave() {

@@ -12,3 +12,16 @@ $RECYCLE.BIN/
 
 # Node.js
 node_modules/
+coverage/
+*.log
+npm-debug.log*
+
+# 微信开发者工具
+# project.private.config.json 是「仅本机」的编译设置（可能含 appid / 本地路径），不入库
+project.private.config.json
+
+# 本地临时产物（打包已忽略，这里也排除出版本库）
+.backup/
+.qa-tmp/
+miniprogram_npm/
+

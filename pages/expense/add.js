@@ -26,6 +26,8 @@ Page({
     quick: [10, 20, 50, 100],
     note: '',
     saving: false,
+    // 编辑已有账目时的版本号：保存时带回去，防止并发覆盖别人的修改
+    version: 0,
     // AA：付款人 + 每人份额，单人行程时只有自己一行
     members: [],
     payerLabels: [],
@@ -112,6 +114,7 @@ Page({
         .indexOf(item.paidBy)
 
       this.setData({
+        version: Number(item.version) || 0,
         amount: (item.amountCents / 100).toFixed(2),
         amountText: moneyText(item.amountCents),
         category: item.category || '其它',
@@ -249,6 +252,7 @@ Page({
     try {
       await expenseService.save(this.data.tripId, {
         _id: this.data.expenseId,
+        version: this.data.version,
         amount: this.data.amount,
         category: this.data.category,
         spentAt: this.data.spentAt,
@@ -261,6 +265,35 @@ Page({
       wx.navigateBack()
     } catch (err) {
       this.setData({ saving: false })
+      // 有人刚改过这一笔：让用户决定覆盖还是放弃，不静默把对方的改动冲掉
+      if (err && err.code === 'conflict') this.onSaveConflict()
     }
+  },
+
+  // 表单页不能用列表页那套“刷新后重试”，只重取版本号，保留用户已填内容
+  onSaveConflict() {
+    const that = this
+    wx.showModal({
+      title: '这笔账刚被改过',
+      content: '「仍然保存」会用你当前填写的内容覆盖对方的改动；「放弃」则返回不保存。',
+      confirmText: '仍然保存',
+      cancelText: '放弃',
+      success: async function (res) {
+        if (!res.confirm) {
+          wx.navigateBack()
+          return
+        }
+        try {
+          const out = await expenseService.list(that.data.tripId)
+          const item = (out.items || []).filter(function (row) {
+            return row._id === that.data.expenseId
+          })[0]
+          that.setData({ version: item ? Number(item.version) || 0 : 0 })
+          that.onSave()
+        } catch (err) {
+          // run() 已提示
+        }
+      }
+    })
   }
 })

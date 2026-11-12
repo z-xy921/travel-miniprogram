@@ -1,47 +1,139 @@
-<view class="page">
-  <view class="card center" wx:if="{{error}}">
-    <view class="muted">{{error}}</view>
-    <view class="btn-sm" style="margin-top: 20rpx;" bindtap="onRetry">重试</view>
+<view class="journal-page">
+  <view class="err-card" wx:if="{{error}}">
+    <view class="err-text">{{error}}</view>
+    <view class="err-btn" bindtap="onRetry">重试</view>
   </view>
 
   <block wx:elif="{{trip}}">
-    <day-tabs tabs="{{tabs}}" active="{{activeDay}}" bind:change="onDayChange" />
-
-    <view class="day-head between">
-      <text class="day-count">{{dayPhotos.length}} 张照片</text>
-      <text class="tiny">点开看大图，长按删除</text>
-    </view>
-
-    <view class="grid">
-      <view
-        class="shot"
-        wx:for="{{dayPhotos}}"
-        wx:key="_id"
-        data-index="{{index}}"
-        bindtap="onPreview"
-        bindlongpress="onRemovePhoto"
+    <!-- 天数多时横向滚动，胶囊按钮不被挤压；两端箭头提示还有内容 -->
+    <view class="day-wrap">
+      <scroll-view
+        class="day-scroll"
+        scroll-x
+        enhanced
+        show-scrollbar="{{false}}"
+        scroll-with-animation
+        scroll-into-view="{{dayScrollInto}}"
+        scroll-left="{{dayScrollLeft}}"
+        bindscroll="onDayScroll"
       >
-        <image class="shot-img" src="{{item.fileID}}" mode="aspectFill" lazy-load="{{true}}" />
-        <view class="shot-time">{{item.timeText}}</view>
+        <view class="day-track">
+          <view
+            class="day-chip {{activeDay === item.index ? 'is-active' : ''}}"
+            wx:for="{{tabs}}"
+            wx:key="index"
+            id="day-{{item.index}}"
+            data-index="{{item.index}}"
+            bindtap="onDayChange"
+          >{{item.label}}</view>
+        </view>
+      </scroll-view>
+
+      <view
+        class="edge edge-left {{showLeftArrow ? 'is-show' : ''}}"
+        data-dir="left"
+        bindtap="onArrowTap"
+      >
+        <text class="arrow">‹</text>
+      </view>
+      <view
+        class="edge edge-right {{showRightArrow ? 'is-show' : ''}}"
+        data-dir="right"
+        bindtap="onArrowTap"
+      >
+        <text class="arrow">›</text>
       </view>
     </view>
 
-    <empty-state
-      wx:if="{{!dayPhotos.length}}"
-      title="这一天还没有照片"
-      desc="拍到的、截图存下来的都可以放进来，按天分开，回看时不会乱。"
-      action="+ 加照片"
-      bind:action="onAddPhoto"
-    />
+    <view class="day-head">
+      <!-- 管理态左侧换成全选，浏览态还是张数 -->
+      <view class="select-all" wx:if="{{isManaging}}" bindtap="onToggleSelectAll">
+        <view class="select-box {{isAllSelected ? 'is-on' : ''}}">
+          <text class="check-icon" wx:if="{{isAllSelected}}">✓</text>
+        </view>
+        <text class="select-text">{{isAllSelected ? '取消全选' : '全选'}}</text>
+      </view>
+      <text class="day-count" wx:else>当天 {{dayPhotos.length}} 张照片</text>
+
+      <text
+        class="manage-btn {{isManaging ? 'is-cancel' : ''}}"
+        wx:if="{{dayPhotos.length}}"
+        bindtap="onToggleManage"
+      >{{isManaging ? '取消' : '管理'}}</text>
+    </view>
+
+    <view class="grid" wx:if="{{dayPhotos.length}}">
+      <view
+        class="shot {{item.selected ? 'is-selected' : ''}}"
+        wx:for="{{dayPhotos}}"
+        wx:key="_id"
+        data-index="{{index}}"
+        data-id="{{item._id}}"
+        bindtap="onPhotoTap"
+      >
+        <image class="shot-img" src="{{item.fileID}}" mode="aspectFill" lazy-load="{{true}}" />
+        <view class="shot-time">{{item.timeText}}</view>
+        <view
+          class="shot-check {{item.selected ? 'is-on' : ''}}"
+          wx:if="{{isManaging}}"
+        >
+          <text class="check-icon" wx:if="{{item.selected}}">✓</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态：浅蓝虚线卡，不压大面积白底 -->
+    <view class="day-empty" wx:if="{{!dayPhotos.length}}">
+      <view class="empty-orb">
+        <view class="empty-emoji">📷</view>
+      </view>
+      <view class="empty-copy">
+        <view class="empty-title">这一天还没有照片</view>
+        <view class="empty-desc">用镜头定格这一天的美好瞬间，随时添加回忆。</view>
+      </view>
+    </view>
   </block>
 
-  <view class="card" wx:else>
-    <view class="muted">加载中…</view>
+  <view class="loading" wx:else>
+    <text class="loading-text">加载中…</text>
   </view>
 
-  <view class="footer-bar">
-    <view class="btn-primary {{saving ? 'is-disabled' : ''}}" bindtap="onAddPhoto">
+  <view class="foot" wx:if="{{trip}}">
+    <view
+      class="foot-btn {{saving ? 'is-disabled' : ''}}"
+      wx:if="{{!isManaging}}"
+      bindtap="onAddPhoto"
+    >
       {{saving ? '上传中…' : '+ 加照片'}}
     </view>
+    <view
+      class="foot-btn is-danger {{selectedPhotos.length && !deleting ? '' : 'is-disabled'}}"
+      wx:else
+      bindtap="onDeleteSelected"
+    >
+      删除选中 ({{selectedPhotos.length}})
+    </view>
+  </view>
+
+  <!-- 上传遮罩：拦截点击与滚动 -->
+  <view
+    class="up-mask"
+    wx:if="{{uploading}}"
+    catchtouchmove="preventTouchMove"
+    catchtap="preventTouchMove"
+  ></view>
+
+  <!-- 居中悬浮进度卡 -->
+  <view class="up-card" wx:if="{{uploading}}" catchtouchmove="preventTouchMove">
+    <view class="up-title">正在上传照片</view>
+    <view class="up-count">
+      <text class="up-num">{{uploadDone}}</text>
+      <text class="up-total">/ {{uploadTotal}}</text>
+    </view>
+    <view class="up-sub">正在飞速上传中…</view>
+    <view class="up-track">
+      <view class="up-fill" style="width: {{uploadPercent}}%;"></view>
+    </view>
+    <view class="up-warm">正在把美好的瞬间装进手帐里 ✨</view>
   </view>
 </view>

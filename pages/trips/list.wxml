@@ -1,12 +1,8 @@
 <view class="trip-page">
-  <!-- 顶部：极简欢迎语 + 小头像 -->
+  <!-- 顶部：只留标题与计数，背景直接露出来 -->
   <view class="head">
-    <view class="head-text">
-      <view class="head-title">准备去哪？</view>
-      <view class="head-sub">已记录 {{tripCount}} 次旅行</view>
-    </view>
-    <image wx:if="{{avatar}}" class="head-avatar" src="{{avatar}}" mode="aspectFill" />
-    <view wx:else class="head-avatar head-avatar-guest" bindtap="onGoLogin">👤</view>
+    <view class="head-title">下一站，去哪？</view>
+    <view class="head-sub">已记录 {{tripCount}} 次旅行</view>
   </view>
 
   <view class="body">
@@ -25,16 +21,15 @@
         data-id="{{item._id}}"
         bindtap="onOpen"
       >
-        <view class="trip-top">
-          <view class="trip-title">{{item.title}}</view>
-          <view class="trip-chev">›</view>
+        <view class="card-main">
+          <view class="card-tag">{{item.tag}}</view>
+          <view class="card-title">{{item.title}}</view>
+          <view class="card-meta">{{item.metaText}}</view>
         </view>
-        <view class="trip-tags">
-          <text class="tag {{item.statusClass}}">{{item.statusText}}</text>
-          <text class="tag tag-plain" wx:if="{{item.modeText}}">{{item.modeText}}</text>
+        <view class="card-side">
+          <view class="card-poi">{{item.poiText}}</view>
+          <view class="card-chev">›</view>
         </view>
-        <view class="trip-line">{{item.dateText}} · {{item.daysText}}</view>
-        <view class="trip-line trip-line-dim">{{item.poiText}}</view>
       </view>
     </block>
 
@@ -47,8 +42,6 @@
     </view>
   </view>
 
-  <!-- 新建行程：独立大按钮 -->
-  <view class="foot">
-    <view class="btn-new" bindtap="onCreate">+ 新建行程</view>
-  </view>
+  <!-- 悬浮新建按钮 -->
+  <view class="fab" bindtap="onCreate">＋</view>
 </view>

@@ -1,29 +1,25 @@
 const tripService = require('../../services/trip')
-const { dateRangeText, todayText } = require('../../utils/format')
+const { parseDate } = require('../../utils/format')
 
 const app = getApp()
 
-// 状态优先看手动标记的 ended，否则按日期推导（不用用户记得去改）
-function statusOf(trip) {
-  if (trip.status === 'ended') return { text: '已结束', cls: 'badge-neutral' }
-  const today = todayText()
-  if (today < trip.startDate) return { text: '未出发', cls: 'badge-pending' }
-  if (today > trip.endDate) return { text: '已结束', cls: 'badge-neutral' }
-  return { text: '进行中', cls: 'badge-done' }
+// 11.12 - 11.14，卡片上只给紧凑写法
+function shortRange(start, end) {
+  const s = parseDate(start)
+  const e = parseDate(end)
+  if (!s || !e) return ''
+  return (s.getMonth() + 1) + '.' + s.getDate() + ' - ' + (e.getMonth() + 1) + '.' + e.getDate()
 }
 
 function toCard(trip) {
-  const status = statusOf(trip)
   const people = (trip.members || []).length || 1
   return {
     _id: trip._id,
     title: trip.title,
-    dateText: dateRangeText(trip.startDate, trip.endDate),
-    daysText: (trip.days || []).length + ' 天',
-    poiText: '已排 ' + (trip.poiCount || 0) + ' 个地点',
-    statusText: status.text,
-    statusClass: status.cls,
-    modeText: people > 1 ? people + ' 人同行' : ''
+    // 城市用目的地字段，老数据没填就用标题兜底
+    tag: trip.destination || trip.title,
+    metaText: [shortRange(trip.startDate, trip.endDate), people + '人'].join(' · '),
+    poiText: (trip.poiCount || 0) + ' 个地点'
   }
 }
 
@@ -33,13 +29,10 @@ Page({
     error: '',
     trips: [],
     needLogin: false,
-    tripCount: 0,
-    avatar: ''
+    tripCount: 0
   },
 
   onShow() {
-    const info = app.globalData.userInfo || null
-    this.setData({ avatar: (info && info.avatar) || '' })
     // 行程按 openid 一对一归属：未登录不拉数据，展示登录引导
     if (!app.isLogin()) {
       this.setData({ loading: false, error: '', trips: [], needLogin: true, tripCount: 0 })

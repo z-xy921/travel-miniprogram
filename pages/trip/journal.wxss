@@ -1,35 +1,252 @@
-.page {
-  padding-bottom: 56rpx;
+page {
+  background-color: #f8fafc;
 }
 
+.journal-page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 0 0 calc(240rpx + env(safe-area-inset-bottom));
+  background-color: #f8fafc;
+}
+
+/* —— 错误 / 加载 —— */
+.err-card {
+  margin: 120rpx 32rpx 0;
+  padding: 48rpx 40rpx;
+  border-radius: 24rpx;
+  background-color: #ffffff;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+  text-align: center;
+}
+
+.err-text {
+  font-size: 28rpx;
+  color: #64748b;
+}
+
+.err-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 72rpx;
+  margin-top: 28rpx;
+  padding: 0 44rpx;
+  border-radius: 36rpx;
+  background-color: #eff6ff;
+  color: #2563eb;
+  font-size: 28rpx;
+}
+
+.loading {
+  padding-top: 260rpx;
+  text-align: center;
+}
+
+.loading-text {
+  font-size: 26rpx;
+  color: #94a3b8;
+}
+
+/* —— Day 胶囊 tab —— */
+.day-wrap {
+  position: relative;
+}
+
+.day-scroll {
+  width: 100%;
+  white-space: nowrap;
+  padding: 32rpx 32rpx 8rpx;
+  box-sizing: border-box;
+}
+
+.day-track {
+  display: inline-flex;
+  align-items: center;
+}
+
+.day-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 60rpx;
+  padding: 0 24rpx;
+  margin-right: 24rpx;
+  border-radius: 30rpx;
+  background-color: #ffffff;
+  border: 2rpx solid #e2e8f0;
+  color: #64748b;
+  font-size: 24rpx;
+  box-sizing: border-box;
+}
+
+.day-chip:last-child {
+  margin-right: 0;
+}
+
+.day-chip.is-active {
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+  border-color: transparent;
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 4rpx 12rpx rgba(37, 99, 235, 0.3);
+}
+
+/* 老基础库不支持 show-scrollbar 时兜底隐藏 */
+.day-scroll::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* —— 两端渐变遮罩 + 箭头：轻盈的“还有内容”提示 —— */
+.edge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 80rpx;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.edge.is-show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 遮罩从背景色过渡到透明，胶囊滑到边缘是“淡出”，不是被切断 */
+.edge-left {
+  left: 0;
+  background: linear-gradient(to right, #f8fafc 40%, rgba(248, 250, 252, 0) 100%);
+}
+
+.edge-right {
+  right: 0;
+  background: linear-gradient(to left, #f8fafc 40%, rgba(248, 250, 252, 0) 100%);
+}
+
+/* 纯文本箭头：够大、够深，不带任何底托 */
+.arrow {
+  font-size: 36rpx;
+  line-height: 1;
+  color: #475569;
+  font-weight: 600;
+}
+
+/* —— 辅助信息 —— */
 .day-head {
-  padding: 18rpx 8rpx 14rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 32rpx 24rpx;
 }
 
 .day-count {
-  font-size: 26rpx;
-  color: #6b7280;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #1f2328;
 }
 
+.manage-btn {
+  font-size: 26rpx;
+  color: #2563eb;
+  padding: 8rpx 16rpx;
+}
+
+.manage-btn.is-cancel {
+  color: #64748b;
+}
+
+/* —— 全选（管理态左上角） —— */
+.select-all {
+  display: flex;
+  align-items: center;
+}
+
+.select-box {
+  width: 36rpx;
+  height: 36rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2rpx solid #cbd5e1;
+  background-color: #ffffff;
+  box-sizing: border-box;
+}
+
+.select-box.is-on {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+.select-text {
+  margin-left: 12rpx;
+  font-size: 26rpx;
+  color: #475569;
+}
+
+/* 选中态：照片降一点透明度，加蓝色描边 */
+.shot.is-selected .shot-img {
+  opacity: 0.8;
+  box-shadow: 0 0 0 4rpx #2563eb;
+}
+
+/* 圆形复选框：右上角 */
+.shot-check {
+  position: absolute;
+  top: 12rpx;
+  right: 12rpx;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.55);
+  border: 2rpx solid rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.shot-check.is-on {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+.check-icon {
+  font-size: 24rpx;
+  line-height: 1;
+  color: #ffffff;
+}
+
+/* —— 照片网格：每行 3 张，1:1 —— */
 .grid {
   display: flex;
   flex-wrap: wrap;
-  margin: 0 -6rpx;
+  padding: 0 24rpx;
 }
 
 .shot {
   position: relative;
-  width: 33.333%;
-  padding: 6rpx;
-  box-sizing: border-box;
+  width: calc((100% - 32rpx) / 3);
+  margin: 0 16rpx 16rpx 0;
+}
+
+.shot:nth-child(3n) {
+  margin-right: 0;
 }
 
 .shot-img {
-  width: 100%;
-  height: 210rpx;
-  border-radius: 14rpx;
-  background-color: #eef0f2;
   display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 12rpx;
+  background-color: #eef2f7;
+  box-shadow: 0 4rpx 12rpx rgba(15, 23, 42, 0.06);
 }
 
 .shot:active .shot-img {
@@ -39,12 +256,186 @@
 /* 时间压在右下角，半透明底保证在亮照片上也看得清 */
 .shot-time {
   position: absolute;
-  right: 16rpx;
-  bottom: 16rpx;
+  right: 12rpx;
+  bottom: 12rpx;
   padding: 2rpx 10rpx;
   border-radius: 8rpx;
   background-color: rgba(15, 23, 42, 0.55);
   color: #ffffff;
   font-size: 20rpx;
   line-height: 28rpx;
+}
+
+/* —— 空状态：浅蓝虚线卡 + 留白 —— */
+.day-empty {
+  margin: 16rpx 32rpx 0;
+  padding: 80rpx 40rpx;
+  border-radius: 24rpx;
+  border: 2rpx dashed #bfdbfe;
+  background-color: rgba(239, 246, 255, 0.5);
+  box-sizing: border-box;
+}
+
+.empty-orb {
+  width: 180rpx;
+  height: 180rpx;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #eff6ff;
+}
+
+.empty-emoji {
+  font-size: 100rpx;
+  line-height: 1;
+}
+
+.empty-copy {
+  max-width: 500rpx;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.empty-title {
+  margin-top: 36rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1f2328;
+}
+
+.empty-desc {
+  margin-top: 18rpx;
+  font-size: 24rpx;
+  color: #94a3b8;
+  line-height: 1.8;
+}
+
+/* —— 底部按钮 + 渐变遮罩 —— */
+.foot {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  padding: 60rpx 0 calc(32rpx + env(safe-area-inset-bottom));
+  background: linear-gradient(
+    180deg,
+    rgba(248, 250, 252, 0) 0%,
+    rgba(248, 250, 252, 0.92) 42%,
+    #f8fafc 66%
+  );
+}
+
+.foot-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(100% - 64rpx);
+  height: 96rpx;
+  margin: 0 auto;
+  border-radius: 24rpx;
+  background: linear-gradient(180deg, #4f8bf9, #2563eb);
+  color: #ffffff;
+  font-size: 32rpx;
+  font-weight: 600;
+  letter-spacing: 2rpx;
+  box-shadow: 0 12rpx 28rpx rgba(37, 99, 235, 0.18);
+}
+
+.foot-btn:active {
+  opacity: 0.92;
+}
+
+.foot-btn.is-disabled {
+  background: #c3ccda;
+  box-shadow: none;
+}
+
+/* 管理态：红色删除按钮 */
+.foot-btn.is-danger {
+  background: linear-gradient(180deg, #f87171, #dc2626);
+  box-shadow: 0 12rpx 28rpx rgba(220, 38, 38, 0.18);
+}
+
+/* —— 上传：遮罩 + 居中卡片 —— */
+.up-mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 80;
+  background-color: rgba(15, 23, 42, 0.45);
+}
+
+.up-card {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: 85;
+  width: 560rpx;
+  padding: 52rpx 44rpx 44rpx;
+  border-radius: 28rpx;
+  background-color: #ffffff;
+  box-shadow: 0 30rpx 80rpx rgba(15, 23, 42, 0.26);
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+}
+
+.up-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1f2328;
+  text-align: center;
+}
+
+.up-count {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  margin-top: 24rpx;
+}
+
+.up-num {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #2563eb;
+  line-height: 1;
+}
+
+.up-total {
+  margin-left: 8rpx;
+  font-size: 26rpx;
+  color: #94a3b8;
+}
+
+.up-sub {
+  margin-top: 12rpx;
+  font-size: 22rpx;
+  color: #94a3b8;
+  text-align: center;
+}
+
+.up-track {
+  height: 12rpx;
+  margin-top: 28rpx;
+  border-radius: 6rpx;
+  background-color: #eff6ff;
+  overflow: hidden;
+}
+
+.up-fill {
+  height: 100%;
+  border-radius: 6rpx;
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+  transition: width 0.25s ease;
+}
+
+.up-warm {
+  margin-top: 24rpx;
+  font-size: 22rpx;
+  color: #b7c0cd;
+  text-align: center;
 }

@@ -121,9 +121,10 @@ Page({
   // 分享卡片直达加入页：对方点开就知道要加入哪一趟
   onShareAppMessage() {
     const trip = this.data.trip
+    const code = this.data.inviteCode
     return {
       title: trip ? '一起排「' + trip.title + '」的行程' : '一起排行程',
-      path: '/pages/trips/join?id=' + this.data.tripId
+      path: '/pages/trips/join?id=' + this.data.tripId + (code ? '&code=' + code : '')
     }
   }
 })

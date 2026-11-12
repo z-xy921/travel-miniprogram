@@ -10,6 +10,7 @@ const notifyHandler = require('./notify')
 // 单个云函数 + action 路由：只部署一次，权限与校验集中在一处
 const routes = {
   'user.me': userHandler.me,
+  'user.login': userHandler.login,
   'user.updateProfile': userHandler.updateProfile,
 
   'trip.list': tripHandler.list,

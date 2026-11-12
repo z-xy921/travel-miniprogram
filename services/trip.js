@@ -31,6 +31,11 @@ module.exports = {
     return run('trip.invite', { tripId: tripId }, '生成邀请')
   },
 
+  // 静默续邀请码：详情页打开时后台调用，不弹 loading 打扰
+  inviteSilent(tripId) {
+    return call('trip.invite', { tripId: tripId })
+  },
+
   join(payload) {
     return run('trip.join', payload, '加入中')
   },

@@ -7,16 +7,13 @@ page {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  padding: 24rpx 32rpx 0;
+  padding: 32rpx 32rpx calc(220rpx + env(safe-area-inset-bottom));
   background-color: #f8fafc;
 }
 
-/* —— 顶部欢迎语 —— */
+/* —— 顶部：极简标题 —— */
 .head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 24rpx 4rpx 44rpx;
+  padding: 24rpx 4rpx 48rpx;
 }
 
 .head-title {
@@ -24,30 +21,13 @@ page {
   font-weight: 700;
   line-height: 1.3;
   letter-spacing: 1rpx;
-  color: #0f172a;
+  color: #1f2328;
 }
 
 .head-sub {
-  margin-top: 10rpx;
+  margin-top: 12rpx;
   font-size: 26rpx;
   color: #64748b;
-}
-
-.head-avatar {
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 40rpx;
-  background-color: #e8f0fe;
-  box-shadow: 0 6rpx 16rpx rgba(37, 99, 235, 0.16);
-}
-
-.head-avatar-guest {
-  font-size: 36rpx;
-  line-height: 80rpx;
-  text-align: center;
-  color: #94a3b8;
-  background-color: #e2e8f0;
-  box-shadow: none;
 }
 
 /* —— 内容区 —— */
@@ -91,66 +71,82 @@ page {
   font-size: 26rpx;
 }
 
-/* —— 行程卡片 —— */
+/* —— 行程卡片：门禁卡 / 车票感 —— */
 .trip-card {
-  padding: 32rpx;
+  display: flex;
+  align-items: stretch;
   margin-bottom: 24rpx;
+  padding: 32rpx;
   border-radius: 24rpx;
   background-color: #ffffff;
   box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
 }
 
 .trip-card:active {
-  background-color: #fbfdff;
+  transform: scale(0.99);
+  opacity: 0.96;
 }
 
-.trip-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.card-main {
+  flex: 1;
+  min-width: 0;
 }
 
-.trip-title {
-  font-size: 34rpx;
+.card-tag {
+  display: inline-block;
+  max-width: 100%;
+  padding: 4rpx 16rpx;
+  border-radius: 10rpx;
+  background-color: #eff6ff;
+  color: #2563eb;
+  font-size: 22rpx;
   font-weight: 600;
-  color: #1f2328;
+  line-height: 1.6;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
-.trip-chev {
+.card-title {
+  margin-top: 16rpx;
   font-size: 36rpx;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #1f2328;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.card-meta {
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  color: #94a3b8;
+}
+
+/* 右侧虚线分隔，做出票根的分区感 */
+.card-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 150rpx;
+  margin-left: 24rpx;
+  padding-left: 24rpx;
+  border-left: 2rpx dashed #e5eaf1;
+  flex-shrink: 0;
+}
+
+.card-poi {
+  font-size: 24rpx;
+  color: #64748b;
+}
+
+.card-chev {
+  margin-top: 8rpx;
+  font-size: 30rpx;
   line-height: 1;
   color: #cbd5e1;
-}
-
-.trip-tags {
-  display: flex;
-  align-items: center;
-  margin-top: 16rpx;
-}
-
-.tag {
-  display: inline-block;
-  margin-right: 12rpx;
-  padding: 4rpx 14rpx;
-  border-radius: 8rpx;
-  font-size: 22rpx;
-  line-height: 32rpx;
-}
-
-.tag-plain {
-  color: #2563eb;
-  background-color: #eff6ff;
-}
-
-.trip-line {
-  margin-top: 14rpx;
-  font-size: 26rpx;
-  color: #475569;
-}
-
-.trip-line-dim {
-  margin-top: 6rpx;
-  color: #94a3b8;
 }
 
 /* —— 空状态 —— */
@@ -206,23 +202,25 @@ page {
   background-color: #dbeafe;
 }
 
-/* —— 底部主按钮 —— */
-.foot {
-  padding: 24rpx 0 calc(32rpx + env(safe-area-inset-bottom));
-}
-
-.btn-new {
-  height: 96rpx;
-  line-height: 96rpx;
-  text-align: center;
-  border-radius: 20rpx;
+/* —— 悬浮新建按钮 —— */
+.fab {
+  position: fixed;
+  right: 40rpx;
+  bottom: calc(48rpx + env(safe-area-inset-bottom));
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 56rpx;
   background: linear-gradient(135deg, #3b82f6, #2563eb);
   color: #ffffff;
-  font-size: 32rpx;
-  font-weight: 600;
-  box-shadow: 0 12rpx 28rpx rgba(37, 99, 235, 0.28);
+  font-size: 60rpx;
+  line-height: 1;
+  box-shadow: 0 12rpx 28rpx rgba(37, 99, 235, 0.35);
 }
 
-.btn-new:active {
-  opacity: 0.92;
+.fab:active {
+  opacity: 0.9;
 }

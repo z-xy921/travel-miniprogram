@@ -1,9 +1,9 @@
 <view class="profile-page">
-  <!-- 头部：纯白卡片，整块可点 -->
+  <!-- 头部个人信息 -->
   <view class="p-card head-card" bindtap="onHeadTap">
     <image
       wx:if="{{userInfo && userInfo.avatar}}"
-      class="avatar avatar-img"
+      class="avatar"
       src="{{userInfo.avatar}}"
       mode="aspectFill"
     />
@@ -11,27 +11,27 @@
 
     <view class="head-info">
       <view class="head-name">{{userInfo && userInfo.nickname ? userInfo.nickname : '未登录用户'}}</view>
-      <view class="head-link {{userInfo ? 'is-muted' : ''}}">{{userInfo ? '欢迎回来' : '点击登录'}}</view>
+      <view class="head-id">{{idText}}</view>
     </view>
 
     <view class="head-chev">›</view>
   </view>
 
-  <!-- 数据统计：三等分 + 细竖线 -->
+  <!-- 数据看板 -->
   <view class="p-card stats-card">
     <view class="stat">
-      <view class="stat-value">{{tripCount}}</view>
-      <view class="stat-label">行程</view>
+      <view class="stat-value">{{cityCount}}</view>
+      <view class="stat-label">去过城市</view>
     </view>
     <view class="stat-divider"></view>
     <view class="stat">
-      <view class="stat-value">{{expenseCount}}</view>
-      <view class="stat-label">记账笔数</view>
+      <view class="stat-value">{{tripCount}}</view>
+      <view class="stat-label">总行程</view>
     </view>
     <view class="stat-divider"></view>
     <view class="stat">
       <view class="stat-value">{{totalText}}</view>
-      <view class="stat-label">累计花费</view>
+      <view class="stat-label">总花费</view>
     </view>
   </view>
 
@@ -39,26 +39,31 @@
   <view class="p-card menu-card">
     <view class="menu-item" bindtap="onInvite">
       <view class="menu-left">
-        <text class="menu-icon">🚪</text>
-        <text class="menu-text">加入同行的行程</text>
+        <view class="menu-icon icon-blue">👥</view>
+        <text class="menu-text">同行邀请</text>
       </view>
       <text class="menu-chev">›</text>
     </view>
 
-    <view class="menu-item" bindtap="onAbout">
+    <view class="menu-item" bindtap="onPrivacy">
       <view class="menu-left">
-        <text class="menu-icon">ℹ️</text>
-        <text class="menu-text">关于我们</text>
+        <view class="menu-icon icon-purple">🔒</view>
+        <text class="menu-text">隐私协议</text>
       </view>
       <text class="menu-chev">›</text>
     </view>
 
-    <view class="menu-item" wx:if="{{userInfo}}" bindtap="onLogout">
+    <view class="menu-item" bindtap="onClearCache">
       <view class="menu-left">
-        <text class="menu-icon">🚶</text>
-        <text class="menu-text is-danger">退出登录</text>
+        <view class="menu-icon icon-orange">🧹</view>
+        <text class="menu-text">清除本地缓存</text>
       </view>
       <text class="menu-chev">›</text>
     </view>
+  </view>
+
+  <!-- 退出登录：单独白卡片，靠颜色警示 -->
+  <view class="p-card logout-card" wx:if="{{userInfo}}" bindtap="onLogout">
+    <text class="logout-text">退出登录</text>
   </view>
 </view>

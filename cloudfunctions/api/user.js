@@ -9,6 +9,20 @@ async function me(payload, ctx) {
   }
 }
 
+// 一键登录：users 里已有完整资料（昵称+头像）的老用户直接放行，
+// 不再弹资料弹层；首次登录或资料不全的才需要完善信息。
+// openid 只从服务端上下文取，账号匹配靠 openid，与设备/本地缓存无关。
+async function login(payload, ctx) {
+  const nickname = ctx.user.nickname || ''
+  const avatar = ctx.user.avatar || ''
+  return {
+    openid: ctx.openid,
+    hasProfile: Boolean(nickname && avatar),
+    nickname: nickname,
+    avatar: avatar
+  }
+}
+
 // 登录/完善资料：写 users，并批量同步该用户在所有协同行程成员里的名字与头像
 async function updateProfile(payload, ctx) {
   const { db } = require('./db')
@@ -45,4 +59,4 @@ async function updateProfile(payload, ctx) {
   return { openid: ctx.openid, nickname: nickname, avatar: avatarFileID }
 }
 
-module.exports = { me: me, updateProfile: updateProfile }
+module.exports = { me: me, login: login, updateProfile: updateProfile }

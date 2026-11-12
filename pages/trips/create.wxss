@@ -1,62 +1,245 @@
+page {
+  background-color: #f8fafc;
+}
+
+.create-page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 32rpx 32rpx calc(200rpx + env(safe-area-inset-bottom));
+  background-color: #f8fafc;
+}
+
+/* —— 统一白卡片 —— */
+.c-card {
+  margin-bottom: 24rpx;
+  padding: 32rpx;
+  border-radius: 24rpx;
+  background-color: #ffffff;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+}
+
+.c-head {
+  margin-bottom: 28rpx;
+}
+
+.c-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #1f2328;
+}
+
+.c-sub {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #94a3b8;
+}
+
+/* —— 模式选择 —— */
+.modes {
+  display: flex;
+}
+
+.mode {
+  position: relative;
+  flex: 1;
+  padding: 26rpx 24rpx;
+  border-radius: 20rpx;
+  background-color: #ffffff;
+  border: 2rpx solid #e5eaf1;
+  box-sizing: border-box;
+}
+
+.mode + .mode {
+  margin-left: 20rpx;
+}
+
+.mode.is-active {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border-color: transparent;
+  box-shadow: 0 10rpx 24rpx rgba(37, 99, 235, 0.24);
+}
+
+.mode-emoji {
+  font-size: 40rpx;
+  line-height: 1;
+}
+
+.mode-title {
+  margin-top: 16rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1f2328;
+}
+
+.mode-desc {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: #94a3b8;
+}
+
+.mode.is-active .mode-title {
+  color: #ffffff;
+}
+
+.mode.is-active .mode-desc {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.mode-check {
+  position: absolute;
+  top: 20rpx;
+  right: 22rpx;
+  font-size: 26rpx;
+  line-height: 1;
+  color: #ffffff;
+}
+
+/* —— 表单字段 —— */
+.c-field {
+  margin-bottom: 28rpx;
+}
+
+.c-field.is-last {
+  margin-bottom: 0;
+}
+
+.c-label {
+  margin-bottom: 12rpx;
+  font-size: 26rpx;
+  color: #64748b;
+}
+
+.c-optional {
+  margin-left: 10rpx;
+  font-size: 22rpx;
+  color: #b7c0cd;
+}
+
+.c-input-wrap {
+  display: flex;
+  align-items: center;
+  min-height: 92rpx;
+  padding: 0 24rpx;
+  border-radius: 16rpx;
+  background-color: #f8fafc;
+  box-sizing: border-box;
+}
+
+.c-input {
+  flex: 1;
+  height: 92rpx;
+  font-size: 30rpx;
+  color: #1f2328;
+}
+
+.c-unit {
+  margin-right: 10rpx;
+  font-size: 30rpx;
+  color: #94a3b8;
+}
+
+.c-ph {
+  color: #b7c0cd;
+}
+
+.c-tip {
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  color: #94a3b8;
+}
+
+/* —— 日期 —— */
 .dates {
   display: flex;
   align-items: center;
+}
+
+.date-picker {
+  flex: 1;
 }
 
 .date-box {
   height: 92rpx;
   line-height: 92rpx;
   padding: 0 24rpx;
-  background-color: #f5f7fb;
   border-radius: 16rpx;
+  background-color: #f8fafc;
   font-size: 28rpx;
+  color: #1f2328;
+  text-align: center;
 }
 
 .date-sep {
   margin: 0 16rpx;
-  color: #94a3b8;
   font-size: 26rpx;
+  color: #94a3b8;
 }
 
+/* —— 交通 chips —— */
 .chips {
   display: flex;
   flex-wrap: wrap;
 }
 
-.modes {
-  display: flex;
-}
-
-.mode {
-  flex: 1;
-  margin-right: 16rpx;
-  padding: 22rpx;
-  border-radius: 18rpx;
-  background-color: #f5f7fb;
-  border: 2rpx solid transparent;
-}
-
-.mode:last-child {
-  margin-right: 0;
-}
-
-.mode.is-active {
-  background-color: #e8f0fe;
-  border-color: #2563eb;
-}
-
-.mode.is-disabled {
-  opacity: 0.6;
-}
-
-.mode-title {
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 72rpx;
+  padding: 0 32rpx;
+  margin: 0 16rpx 0 0;
+  border-radius: 36rpx;
+  background-color: #f8fafc;
+  border: 2rpx solid #e5eaf1;
+  color: #475569;
   font-size: 28rpx;
-  font-weight: 600;
-  color: #1f2937;
+  box-sizing: border-box;
 }
 
-.mode-desc {
-  margin-top: 8rpx;
+.chip.is-active {
+  background-color: #eff6ff;
+  border-color: #2563eb;
+  color: #2563eb;
+  font-weight: 600;
+}
+
+/* —— 编辑态提示 —— */
+.edit-tip {
+  padding: 8rpx 8rpx 0;
   font-size: 24rpx;
-  color: #64748b;
+  color: #94a3b8;
+  line-height: 1.6;
+}
+
+/* —— 底部固定按钮 —— */
+.foot {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  padding: 20rpx 32rpx calc(24rpx + env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0) 0%, #f8fafc 38%);
+}
+
+.main-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 96rpx;
+  border-radius: 20rpx;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #ffffff;
+  font-size: 32rpx;
+  font-weight: 600;
+  box-shadow: 0 12rpx 28rpx rgba(37, 99, 235, 0.28);
+}
+
+.main-btn:active {
+  opacity: 0.92;
+}
+
+.main-btn.is-disabled {
+  background: #c3ccda;
+  box-shadow: none;
 }

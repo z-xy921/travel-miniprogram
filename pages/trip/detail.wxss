@@ -1,73 +1,342 @@
-.day-actions {
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: 22rpx;
+page {
+  background-color: #f8fafc;
 }
 
-.day-actions .btn-sm {
-  margin-right: 14rpx;
-  margin-bottom: 6rpx;
+.detail-page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 24rpx 32rpx calc(220rpx + env(safe-area-inset-bottom));
+  background-color: #f8fafc;
 }
 
-.del {
-  margin: 8rpx 0 40rpx;
-  padding: 24rpx 0;
+/* —— 错误 / 加载 —— */
+.err-card {
+  margin-top: 120rpx;
+  padding: 48rpx 40rpx;
+  border-radius: 24rpx;
+  background-color: #ffffff;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
   text-align: center;
+}
+
+.err-text {
   font-size: 28rpx;
-  color: #dc2626;
-}
-
-.day-head {
-  padding: 8rpx 8rpx 14rpx;
-}
-
-.day-count {
-  font-size: 26rpx;
   color: #64748b;
 }
 
-.day-link {
+.err-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 72rpx;
+  margin-top: 28rpx;
+  padding: 0 44rpx;
+  border-radius: 36rpx;
+  background-color: #eff6ff;
+  color: #2563eb;
+  font-size: 28rpx;
+}
+
+.loading {
+  padding-top: 260rpx;
+  text-align: center;
+}
+
+.loading-text {
   font-size: 26rpx;
+  color: #94a3b8;
+}
+
+/* —— 头部 —— */
+.head {
+  position: relative;
+  padding: 32rpx;
+  border-radius: 24rpx;
+  background-color: #ffffff;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+}
+
+.head-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.tags {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  min-height: 44rpx;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 40rpx;
+  padding: 0 16rpx;
+  margin: 0 12rpx 8rpx 0;
+  border-radius: 10rpx;
+  font-size: 22rpx;
+  line-height: 1;
+}
+
+.tag.is-blue {
+  background-color: #eff6ff;
+  color: #2563eb;
+}
+
+.tag.is-green {
+  background-color: #ecfdf5;
+  color: #059669;
+}
+
+.tag.is-gray {
+  background-color: #f1f5f9;
+  color: #64748b;
+}
+
+.tag.is-budget {
+  background-color: #f8fafc;
+  color: #475569;
+  box-shadow: inset 0 0 0 2rpx #e5eaf1;
+}
+
+.tag.is-muted {
+  background-color: #f8fafc;
+  color: #94a3b8;
+  box-shadow: inset 0 0 0 2rpx #eef2f7;
+}
+
+.head-tools {
+  display: flex;
+  align-items: center;
+}
+
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64rpx;
+  height: 64rpx;
+  margin-left: 12rpx;
+  border-radius: 20rpx;
+  background-color: #f8fafc;
+  font-size: 26rpx;
+  color: #475569;
+}
+
+.icon-btn:active {
+  opacity: 0.7;
+}
+
+.icon-btn.is-more {
+  font-size: 34rpx;
+  line-height: 1;
+  color: #1f2328;
+}
+
+.head-title {
+  margin-top: 16rpx;
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #1f2328;
+  line-height: 1.3;
+  letter-spacing: 1rpx;
+}
+
+.head-meta {
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  color: #94a3b8;
+}
+
+/* —— 右上角折叠菜单 —— */
+.more-mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 25;
+}
+
+.more-panel {
+  position: absolute;
+  top: 100rpx;
+  right: 24rpx;
+  z-index: 30;
+  width: 300rpx;
+  padding: 10rpx 0;
+  border-radius: 20rpx;
+  background-color: #ffffff;
+  box-shadow: 0 18rpx 48rpx rgba(15, 23, 42, 0.16);
+  overflow: hidden;
+}
+
+.more-item {
+  padding: 24rpx 32rpx;
+  font-size: 28rpx;
+  color: #1f2328;
+}
+
+.more-item:active {
+  background-color: #f8fafc;
+}
+
+.more-item.is-disabled {
+  color: #c3ccda;
+}
+
+.more-item.is-danger {
+  color: #dc2626;
+}
+
+.more-line {
+  height: 2rpx;
+  margin: 8rpx 0;
+  background-color: #f1f5f9;
+}
+
+/* —— 日期与地点 —— */
+.day-block {
+  margin-top: 24rpx;
+}
+
+.day-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4rpx 8rpx 16rpx;
+}
+
+.day-count {
+  font-size: 24rpx;
+  color: #94a3b8;
+}
+
+.day-link {
+  font-size: 24rpx;
   color: #2563eb;
   padding: 4rpx 0;
 }
 
-.tip {
-  margin-top: 24rpx;
+.day-empty {
+  padding: 64rpx 32rpx;
+  border-radius: 24rpx;
+  background-color: #ffffff;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+  text-align: center;
+}
+
+.empty-emoji {
+  font-size: 56rpx;
+  line-height: 1;
+}
+
+.empty-title {
+  margin-top: 20rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1f2328;
+}
+
+.empty-desc {
+  margin-top: 10rpx;
   font-size: 24rpx;
-  color: #64748b;
+  color: #94a3b8;
   line-height: 1.6;
 }
 
-/* 详情页工具区：手帐 / 提醒 / 复制，一行三个 */
-.tools {
-  display: flex;
-  padding: 18rpx 8rpx;
+.tip {
+  padding: 20rpx 8rpx 0;
+  font-size: 22rpx;
+  color: #b7c0cd;
+  line-height: 1.6;
 }
 
-.tool {
-  flex: 1;
-  padding: 14rpx 20rpx;
+/* —— 危险操作（弱化） —— */
+.danger-zone {
+  margin-top: 48rpx;
+  padding: 28rpx 0 8rpx;
   text-align: center;
-  border-right: 2rpx solid #edf1f7;
 }
 
-.tool:last-child {
-  border-right: none;
+.danger-link {
+  display: inline-block;
+  padding: 12rpx 32rpx;
+  font-size: 26rpx;
+  color: #b8c1cc;
 }
 
-.tool:active {
-  opacity: 0.7;
+.danger-link:active {
+  color: #dc2626;
 }
 
-.tool-name {
-  font-size: 28rpx;
-  font-weight: 600;
-  color: #2563eb;
+/* —— 底部快捷栏 —— */
+.bottom-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  padding: 16rpx 32rpx calc(20rpx + env(safe-area-inset-bottom));
+  background-color: #ffffff;
+  box-shadow: 0 -6rpx 24rpx rgba(15, 23, 42, 0.06);
 }
 
-.tool-desc {
+.bar-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 96rpx;
+  height: 88rpx;
+  margin-right: 16rpx;
+  border-radius: 18rpx;
+  background-color: #f8fafc;
+}
+
+.bar-btn:active {
+  opacity: 0.75;
+}
+
+.bar-btn.is-on {
+  background-color: #eff6ff;
+}
+
+.bar-emoji {
+  font-size: 30rpx;
+  line-height: 1;
+}
+
+.bar-label {
   margin-top: 6rpx;
   font-size: 22rpx;
-  color: #94a3b8;
+  color: #475569;
+}
+
+.bar-btn.is-on .bar-label {
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.bar-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 88rpx;
+  border-radius: 18rpx;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #ffffff;
+  font-size: 30rpx;
+  font-weight: 600;
+  box-shadow: 0 8rpx 20rpx rgba(37, 99, 235, 0.28);
+}
+
+.bar-main:active {
+  opacity: 0.92;
 }

@@ -1,7 +1,27 @@
 const expenseService = require('../../services/expense')
-const { moneyText, toDateText } = require('../../utils/format')
+const { moneyText, moneyPlain, toDateText } = require('../../utils/format')
 
 const app = getApp()
+
+// 分类色板：图标 + 主色 + 浅底色，条形图和图例共用一套
+const CATEGORY_META = {
+  交通: { icon: '🚕', color: '#3b82f6', tint: '#eff6ff' },
+  餐饮: { icon: '🍜', color: '#f59e0b', tint: '#fffbeb' },
+  门票: { icon: '🎫', color: '#8b5cf6', tint: '#f5f3ff' },
+  住宿: { icon: '🏨', color: '#10b981', tint: '#ecfdf5' },
+  购物: { icon: '🛍️', color: '#ec4899', tint: '#fdf2f8' },
+  其它: { icon: '🧾', color: '#94a3b8', tint: '#f1f5f9' }
+}
+
+function metaOf(category) {
+  return CATEGORY_META[category] || CATEGORY_META['其它']
+}
+
+// 明细金额去掉无意义的 .00，读起来更干净
+function shortMoney(cents) {
+  const plain = moneyPlain(cents)
+  return '¥' + (plain.slice(-3) === '.00' ? plain.slice(0, -3) : plain)
+}
 
 function groupByDate(items) {
   const map = {}
@@ -13,16 +33,18 @@ function groupByDate(items) {
       map[key] = { date: key, dateText: toDateText(key), items: [], totalCents: 0 }
       order.push(key)
     }
+    const meta = metaOf(item.category)
     // 非自己付的那几笔直接把付款人写进描述，一眼看出谁垫的
     const payer = item.paidByName || ''
-    const prefix = payer && payer.indexOf('我') !== 0 ? payer + ' · ' : ''
+    const prefix = payer && payer.indexOf('我') !== 0 ? payer + ' - ' : ''
     map[key].items.push({
       _id: item._id,
-      category: item.category,
-      note: prefix + (item.note || '—'),
-      amountText: moneyText(item.amountCents)
+      icon: meta.icon,
+      tint: meta.tint,
+      note: prefix + (item.note || item.category || '—'),
+      amountText: '- ' + shortMoney(item.amountCents)
     })
-    map[key].totalCents += item.amountCents
+    map[key].totalCents += Number(item.amountCents) || 0
   })
 
   return order.map(function (key) {
@@ -31,22 +53,9 @@ function groupByDate(items) {
       date: group.date,
       dateText: group.dateText,
       items: group.items,
-      totalText: moneyText(group.totalCents)
+      totalText: shortMoney(group.totalCents)
     }
   })
-}
-
-// 预算只在填过时才算：没填就不显示进度条，避免“预算 0 已超支”的怪话
-function budgetOf(trip, totalCents) {
-  const budget = Number(trip.budgetCents) || 0
-  if (!budget) return null
-  const left = budget - totalCents
-  return {
-    budgetText: moneyText(budget),
-    leftText: moneyText(Math.abs(left)),
-    exceeded: left < 0,
-    percent: Math.min(100, Math.round((totalCents * 100) / budget))
-  }
 }
 
 Page({
@@ -55,11 +64,10 @@ Page({
     trip: null,
     groups: [],
     summary: null,
+    debt: null,
     loading: true,
     error: '',
-    needLogin: false,
-    showSettle: false,
-    settle: null
+    needLogin: false
   },
 
   onLoad(query) {
@@ -69,7 +77,7 @@ Page({
   onShow() {
     // 游客模式：账单是隐私数据，不强制跳转，只展示登录引导
     if (!app.isLogin()) {
-      this.setData({ loading: false, error: '', groups: [], summary: null, needLogin: true })
+      this.setData({ loading: false, error: '', groups: [], summary: null, debt: null, needLogin: true })
       return
     }
     this.setData({ needLogin: false })
@@ -82,34 +90,93 @@ Page({
 
   async load() {
     try {
-      const res = await expenseService.list(this.data.tripId)
+      const results = await Promise.all([
+        expenseService.list(this.data.tripId),
+        expenseService.settle(this.data.tripId)
+      ])
+      const res = results[0]
+      const settle = results[1]
       const summary = res.summary
       const totalCents = summary.totalCents || 0
+
+      // 结算里带 self 标记，直接取自己的垫付与应摊
+      const self = (settle.members || []).filter(function (row) {
+        return row.self
+      })[0] || { paidCents: 0, owedCents: 0, label: '' }
+      const transfers = settle.transfers || []
+      const owesMe = transfers.filter(function (row) {
+        return row.toLabel === self.label
+      })
+      const iOwe = transfers.filter(function (row) {
+        return row.fromLabel === self.label
+      })
+
+      let debt = null
+      if (owesMe.length) {
+        debt = {
+          tone: 'warn',
+          text: owesMe.map(function (row) {
+            return row.fromLabel + ' 欠你 ' + moneyText(row.amountCents)
+          }).join('，')
+        }
+      } else if (iOwe.length) {
+        debt = {
+          tone: 'info',
+          text: iOwe.map(function (row) {
+            return '你欠 ' + row.toLabel + ' ' + moneyText(row.amountCents)
+          }).join('，')
+        }
+      }
+
+      const bars = (summary.byCategory || []).map(function (item) {
+        const meta = metaOf(item.category)
+        return {
+          category: item.category,
+          text: moneyText(item.cents),
+          color: meta.color,
+          width: totalCents ? Math.round((item.cents * 100) / totalCents) : 0
+        }
+      })
+
+      const settleLines = ['【AA 结算】' + res.trip.title, '总支出 ' + moneyText(totalCents)]
+      const transferLines = transfers.length
+        ? transfers.map(function (row) {
+          return row.fromLabel + ' → ' + row.toLabel + ' ' + moneyText(row.amountCents)
+        })
+        : ['当前已经结清，无需转账']
+      const settleText = settleLines.concat(transferLines).join('\n')
 
       this.setData({
         trip: res.trip,
         groups: groupByDate(res.items || []),
+        debt: debt,
+        settleText: settleText,
         summary: {
           totalText: moneyText(totalCents),
           countText: summary.count + ' 笔',
-          dayAvgText: moneyText(Math.round(totalCents / ((res.trip.days || []).length || 1))),
-          bars: (summary.byCategory || []).map(function (item) {
-            return {
-              category: item.category,
-              text: moneyText(item.cents),
-              width: totalCents ? Math.round((item.cents * 100) / totalCents) : 0
-            }
-          }),
-          budget: budgetOf(res.trip, totalCents)
+          paidText: moneyText(self.paidCents),
+          owedText: moneyText(self.owedCents),
+          bars: bars,
+          legend: bars
         },
         loading: false,
-        error: '',
-        // 明细变了，结算结果也不能用旧的
-        settle: null
+        error: ''
       })
     } catch (err) {
       this.setData({ loading: false, error: err.message || '加载失败' })
     }
+  },
+
+  // 结算文案复制到剪贴板，粘到群里就能对账
+  onCopySettle() {
+    const text = this.data.settleText || ''
+    if (!text) return
+    wx.setClipboardData({
+      data: text,
+      success() {
+        wx.showToast({ title: '结算单已复制', icon: 'none' })
+      }
+    })
   },
 
   onAdd() {
@@ -121,44 +188,6 @@ Page({
     wx.navigateTo({
       url: '/pages/expense/add?tripId=' + this.data.tripId + '&expenseId=' + e.currentTarget.dataset.id
     })
-  },
-
-  async onToggleSettle() {
-    if (this.data.showSettle) {
-      this.setData({ showSettle: false })
-      return
-    }
-
-    if (!this.data.settle) {
-      try {
-        const res = await expenseService.settle(this.data.tripId)
-        this.setData({ settle: this.formatSettle(res) })
-      } catch (err) {
-        return
-      }
-    }
-    this.setData({ showSettle: true })
-  },
-
-  formatSettle(res) {
-    return {
-      members: (res.members || []).map(function (item) {
-        return {
-          openid: item.openid,
-          label: item.label,
-          paidText: moneyText(item.paidCents),
-          owedText: moneyText(item.owedCents),
-          balanceText: (item.balanceCents > 0 ? '+' : item.balanceCents < 0 ? '-' : '') + moneyText(Math.abs(item.balanceCents)),
-          owe: item.balanceCents < 0
-        }
-      }),
-      transfers: (res.transfers || []).map(function (item, index) {
-        return {
-          key: 't' + index,
-          text: item.fromLabel + ' 给 ' + item.toLabel + ' ' + moneyText(item.amountCents)
-        }
-      })
-    }
   },
 
   onRemove(e) {
